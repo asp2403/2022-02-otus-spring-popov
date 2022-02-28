@@ -4,6 +4,7 @@ import ru.otus.homework.popov.domain.Question;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.opencsv.CSVReader;
 
@@ -18,7 +19,7 @@ public class QuestionDaoImpl implements QuestionDao {
     @Override
     public List<Question> getQuestions() {
         var list = new ArrayList<Question>();
-        try (CSVReader reader = new CSVReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(resourceName)))) {
+        try (CSVReader reader = new CSVReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(resourceName))))) {
             List<String[]> allRows = reader.readAll();
             for (var strArray : allRows) {
                 if (strArray.length >= 1) {
