@@ -13,7 +13,7 @@ public class Main {
         List<Question> list = service.getQuestions();
         for (var i = 0; i < list.size(); i ++) {
             var question = list.get(i);
-            System.out.println((i + 1) + ". " + question.getQuestion());
+            System.out.println((i + 1) + ". " + question.getBody());
             var answers = question.getAnswers();
             for (var j = 0; j < answers.size(); j++) {
                 System.out.println("   " + (char) (97 + j) + ". " + answers.get(j));

@@ -23,7 +23,7 @@ public class QuestionDaoImpl implements QuestionDao {
             for (var strArray : allRows) {
                 if (strArray.length >= 1) {
                     var answers = new ArrayList<String>();
-                    for (int j = 1; j < strArray.length; j++) {
+                    for (var j = 1; j < strArray.length; j++) {
                         answers.add(strArray[j]);
                     }
                     list.add(new Question(strArray[0], answers));
