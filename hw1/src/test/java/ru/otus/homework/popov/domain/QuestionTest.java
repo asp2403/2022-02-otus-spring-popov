@@ -12,11 +12,11 @@ class QuestionTest {
     @Test
     void shouldHaveCorrectConstructor() {
         var body = "My question";
-        var answers = Arrays.asList("My First Answer", "My Second Answer");
+        var answers = Arrays.asList(new Answer("My First Answer", true), new Answer("My Second Answer", false));
         var question = new Question(body, answers);
         assertAll(
                 () -> assertEquals(body, question.getBody()),
-                () -> assertTrue(question.getAnswers().equals(answers))
+                () -> assertEquals(answers, question.getAnswers())
         );
     }
 

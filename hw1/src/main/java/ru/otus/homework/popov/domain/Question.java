@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public class Question {
     private final String body;
-    private final List<String> answers;
+    private final List<Answer> answers;
 
 
-    public Question(String body, List<String> answers) {
+    public Question(String body, List<Answer> answers) {
         this.body = body;
         this.answers = answers;
     }
@@ -17,7 +17,7 @@ public class Question {
         return body;
     }
 
-    public List<String> getAnswers() {
+    public List<Answer> getAnswers() {
         return answers;
     }
 
