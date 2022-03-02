@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.homework.popov.dao.QuestionDao;
+import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
 
 
@@ -25,10 +26,11 @@ class QuestionServiceImplTest {
 
     @DisplayName("возвращает корректный набор данных")
     @Test
-    void getQuestions() {
-        given(questionDao.getQuestions()).willReturn(Arrays.asList(
-                new Question("Question1", Arrays.asList("Answer11", "Answer12")),
-                new Question("Question2", Arrays.asList("Answer21", "Answer22"))));
-        assertEquals(questionService.getQuestions(), questionDao.getQuestions());
+    void shouldCorrectGetQuestions() {
+        var questions = Arrays.asList(
+                new Question("Question1", Arrays.asList(new Answer("Answer11", true), new Answer("Answer12", false))),
+                new Question("Question2", Arrays.asList(new Answer("Answer21", false), new Answer("Answer22", true))));
+        given(questionDao.getQuestions()).willReturn(questions);
+        assertEquals(questionService.getQuestions(), questions);
     }
 }

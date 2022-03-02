@@ -12,4 +12,16 @@
         <constructor-arg name="dao" ref="questionDao"/>
     </bean>
 
+    <bean id="ioService" class="ru.otus.homework.popov.service.IOServiceImpl">
+    </bean>
+
+    <bean id="converter" class="ru.otus.homework.popov.service.QuestionConverterImpl">
+    </bean>
+
+    <bean id="appRunner" class="ru.otus.homework.popov.service.AppRunner">
+        <constructor-arg name="ioService" ref="ioService"/>
+        <constructor-arg name="questionConverter" ref="converter"/>
+        <constructor-arg name="questionService" ref="questionService"/>
+    </bean>
+
 </beans>
