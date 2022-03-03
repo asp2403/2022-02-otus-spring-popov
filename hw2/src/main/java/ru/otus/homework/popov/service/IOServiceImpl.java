@@ -1,7 +1,10 @@
 package ru.otus.homework.popov.service;
 
+import org.springframework.stereotype.Service;
+
 import java.io.PrintStream;
 
+@Service
 public class IOServiceImpl implements IOService{
 
     private final PrintStream output;

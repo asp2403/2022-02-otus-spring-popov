@@ -1,9 +1,10 @@
 package ru.otus.homework.popov.service;
 
+import org.springframework.stereotype.Service;
 import ru.otus.homework.popov.domain.Question;
 
 import java.util.List;
-
+@Service
 public class AppRunner {
 
     private final QuestionService questionService;

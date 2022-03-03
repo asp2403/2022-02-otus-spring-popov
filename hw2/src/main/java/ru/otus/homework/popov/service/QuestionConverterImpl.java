@@ -1,7 +1,9 @@
 package ru.otus.homework.popov.service;
 
+import org.springframework.stereotype.Service;
 import ru.otus.homework.popov.domain.Question;
 
+@Service
 public class QuestionConverterImpl implements QuestionConverter {
     @Override
     public String convertQuestionToString(int questionNumber, Question question) {

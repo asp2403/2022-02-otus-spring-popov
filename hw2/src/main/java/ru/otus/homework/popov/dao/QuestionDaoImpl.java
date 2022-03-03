@@ -1,5 +1,7 @@
 package ru.otus.homework.popov.dao;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
 import java.io.*;
@@ -10,11 +12,12 @@ import java.util.Objects;
 import com.opencsv.CSVReader;
 import ru.otus.homework.popov.exceptions.QuestionsLoadingException;
 
+@Repository
 public class QuestionDaoImpl implements QuestionDao {
 
     private final String resourceName;
 
-    public QuestionDaoImpl(String resourceName) {
+    public QuestionDaoImpl(@Value("${resourceName}") String resourceName) {
         this.resourceName = resourceName;
     }
 
