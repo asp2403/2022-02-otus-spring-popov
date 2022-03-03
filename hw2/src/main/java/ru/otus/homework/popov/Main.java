@@ -21,6 +21,6 @@ public class Main {
         IOService ioService = context.getBean(IOService.class);
         QuestionConverter converter = context.getBean(QuestionConverter.class);
         AppRunner runner = context.getBean(AppRunner.class);
-        runner.run();
+        runner.execute();
     }
 }

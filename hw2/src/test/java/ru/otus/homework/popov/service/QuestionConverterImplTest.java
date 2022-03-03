@@ -16,6 +16,6 @@ class QuestionConverterImplTest {
     void shouldCorrectConvertQuestionToString() {
         var question = new Question("Test", Arrays.asList(new Answer("Answer 1", false), new Answer("Answer 2", true)));
         var converter = new QuestionConverterImpl();
-        assertEquals("1. Test\n   a. Answer 1\n   b. Answer 2 *\n", converter.convertQuestionToString(0, question));
+        assertEquals("1. Test\n   a. Answer 1\n   b. Answer 2\n", converter.convertQuestionToString(0, question));
     }
 }

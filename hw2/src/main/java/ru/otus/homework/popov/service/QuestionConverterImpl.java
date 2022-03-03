@@ -12,7 +12,7 @@ public class QuestionConverterImpl implements QuestionConverter {
         var answers = question.getAnswers();
         for (var i = 0; i < answers.size(); i++) {
             var answer = answers.get(i);
-            sb.append("   ").append((char) (97 + i)).append(". ").append(answer.getText()).append(answer.isCorrect()?" *":"").append("\n");
+            sb.append("   ").append((char) (97 + i)).append(". ").append(answer.getText()).append("\n");
         }
         return sb.toString();
     }
