@@ -6,10 +6,6 @@ public interface IOService {
 
     void println(String s);
 
-    int readInt();
-
-    int readInt(String prompt);
-
     String readString();
 
     String readString(String prompt);

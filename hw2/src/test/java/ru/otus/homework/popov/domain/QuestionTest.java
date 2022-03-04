@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 class QuestionTest {
 
-    @DisplayName("корректно создаётся конструктором")
+    @DisplayName("должен корректно создаваться конструктором")
     @Test
     void shouldHaveCorrectConstructor() {
         var body = "My question";

@@ -10,6 +10,7 @@ import java.util.List;
 public class AppRunner {
 
     public static final String CMD_EXIT = "q";
+    public static final String CMD_YES = "y";
     public static final String MSG_WELCOME = String.format("Welcome to the test! Enter your name, please. Type '%s' for exit", CMD_EXIT);
     public static final String MSG_HELLO = "Hello, %s! You should score %d points to pass the test. Good luck!";
     public static final String MSG_QUESTION = String.format("Choose the correct answer or type '%s' for exit", CMD_EXIT);
@@ -18,40 +19,38 @@ public class AppRunner {
     public static final String ERR_OUT_OF_BOUNDS = "Character is out of bounds!";
     public static final String MSG_SCORE = "Test complete. Your score is: %d";
     public static final String MSG_SUCCESS = "Congratulations, you successfully pass the test!";
-    public static final String MSG_FAIL = "Sadly you couldn't pass the test. Type 'y' to try again or any symbol for exit";
+    public static final String MSG_FAIL = String.format("Sadly you couldn't pass the test. Type '%s' to try again or any symbol for exit", CMD_YES);
     public static final String MSG_GOOD_BY = "Good by!";
     public static final String PROMPT = ">";
 
     private final int scoreToPass;
-    private final QuestionService questionService;
+    private final TestingService testingService;
     private final IOService ioService;
     private final QuestionConverter questionConverter;
-    private User user;
-    private List<Question> questions;
+
 
     public AppRunner(
             @Value("${scoreToPass}") int scoreToPass,
             IOService ioService,
             QuestionConverter questionConverter,
-            QuestionService questionService) {
+            TestingService testingService) {
         this.scoreToPass = scoreToPass;
         this.ioService = ioService;
-        this.questionService = questionService;
+        this.testingService = testingService;
         this.questionConverter = questionConverter;
     }
 
     public void execute() {
-        if (!welcomeUser()) {
+        if (!sayHello()) {
             sayGoodBy();
             return;
         }
-        loadQuestions();
         run();
     }
 
     private boolean processUserAnswer(int questionIndex) {
         var result = true;
-        ioService.println(questionConverter.convertQuestionToString(questionIndex, questions.get(questionIndex)));
+        ioService.println(questionConverter.convertQuestionToString(questionIndex, testingService.getQuestion(questionIndex)));
         ioService.println(MSG_QUESTION);
         do {
             var s = ioService.readString(PROMPT).toLowerCase();
@@ -62,13 +61,9 @@ public class AppRunner {
             if (s.length() != 1) {
                 ioService.println(ERR_STRING_TOO_LONG);
             } else {
-                var question = questions.get(questionIndex);
                 var answerIndex = s.charAt(0) - 'a';
                 try {
-                    var answer = question.getAnswers().get(answerIndex);
-                    if (answer.isCorrect()) {
-                        user.addScore();
-                    }
+                    testingService.answerQuestion(questionIndex, answerIndex);
                     break;
                 } catch (IndexOutOfBoundsException e) {
                     ioService.println(ERR_OUT_OF_BOUNDS);
@@ -83,21 +78,22 @@ public class AppRunner {
     }
 
     private void run() {
-        for (var index = 0; index < questions.size(); index++) {
+        for (var index = 0; index < testingService.getQuestionCount(); index++) {
             if (!processUserAnswer(index)) {
                 sayGoodBy();
                 return;
             }
         }
-        ioService.println(String.format(MSG_SCORE, user.getScore()));
-        if (user.getScore() >= scoreToPass) {
+        var score = testingService.getUser().getScore();
+        ioService.println(String.format(MSG_SCORE, score));
+        if (score >= scoreToPass) {
             ioService.println(MSG_SUCCESS);
             sayGoodBy();
         } else {
             ioService.println(MSG_FAIL);
             var s = ioService.readString(PROMPT);
-            if (s.toLowerCase().equals("y")) {
-                user.resetScore();
+            if (s.toLowerCase().equals(CMD_YES)) {
+                testingService.tryAgain();
                 run();
             } else {
                 sayGoodBy();
@@ -106,11 +102,7 @@ public class AppRunner {
 
     }
 
-    private void loadQuestions() {
-        questions = questionService.getQuestions();
-    }
-
-    private boolean welcomeUser() {
+    private boolean sayHello() {
         ioService.println(MSG_WELCOME);
         do {
             var userName = ioService.readString(PROMPT);
@@ -120,8 +112,8 @@ public class AppRunner {
             if (userName.isEmpty()) {
                 ioService.println(ERR_EMPTY_STRING);
             } else {
-                user = new User(userName);
-                ioService.println(String.format(MSG_HELLO, user.getName(), scoreToPass));
+                testingService.registerUser(userName);
+                ioService.println(String.format(MSG_HELLO, userName, scoreToPass));
                 return true;
             }
         } while (true);

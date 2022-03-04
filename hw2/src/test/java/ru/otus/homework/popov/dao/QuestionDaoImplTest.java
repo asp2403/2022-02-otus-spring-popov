@@ -32,6 +32,6 @@ class QuestionDaoImplTest {
                 ))
         );
         var dao = new QuestionDaoImpl("test.csv");
-        assertEquals(questions, dao.getQuestions());
+        assertEquals(questions, dao.loadQuestions());
     }
 }

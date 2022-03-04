@@ -5,5 +5,5 @@ import ru.otus.homework.popov.domain.Question;
 import java.util.List;
 
 public interface QuestionDao {
-    List<Question> getQuestions();
+    List<Question> loadQuestions();
 }

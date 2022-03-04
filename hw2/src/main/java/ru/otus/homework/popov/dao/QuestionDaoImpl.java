@@ -22,7 +22,7 @@ public class QuestionDaoImpl implements QuestionDao {
     }
 
     @Override
-    public List<Question> getQuestions() {
+    public List<Question> loadQuestions() {
         var list = new ArrayList<Question>();
         try (CSVReader reader = new CSVReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(resourceName))))) {
             List<String[]> allRows = reader.readAll();

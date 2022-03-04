@@ -32,17 +32,6 @@ public class IOServiceImpl implements IOService{
     }
 
     @Override
-    public int readInt() {
-        return Integer.parseInt(scanner.nextLine());
-    }
-
-    @Override
-    public int readInt(String prompt) {
-        printPrompt(prompt);
-        return readInt();
-    }
-
-    @Override
     public String readString() {
         return scanner.nextLine().trim();
     }
