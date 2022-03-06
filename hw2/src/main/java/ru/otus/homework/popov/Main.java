@@ -15,9 +15,6 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
-        TestingService testingService = context.getBean(TestingService.class);
-        IOService ioService = context.getBean(IOService.class);
-        QuestionConverter converter = context.getBean(QuestionConverter.class);
         AppRunner runner = context.getBean(AppRunner.class);
         runner.execute();
     }

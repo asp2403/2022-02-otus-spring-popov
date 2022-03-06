@@ -2,15 +2,15 @@ package ru.otus.homework.popov.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.otus.homework.popov.domain.Question;
-import ru.otus.homework.popov.domain.User;
+import ru.otus.homework.popov.exceptions.EmptyStringException;
+import ru.otus.homework.popov.exceptions.NotCharException;
 
-import java.util.List;
 @Service
 public class AppRunner {
 
-    public static final String CMD_EXIT = "q";
-    public static final String CMD_YES = "y";
+    public static final char CMD_EXIT = 'q';
+    public static final char CMD_YES = 'y';
+    public static final char CMD_NO = 'n';
     public static final String MSG_WELCOME = String.format("Welcome to the test! Enter your name, please. Type '%s' for exit", CMD_EXIT);
     public static final String MSG_HELLO = "Hello, %s! You should score %d points to pass the test. Good luck!";
     public static final String MSG_QUESTION = String.format("Choose the correct answer or type '%s' for exit", CMD_EXIT);
@@ -19,7 +19,8 @@ public class AppRunner {
     public static final String ERR_OUT_OF_BOUNDS = "Character is out of bounds!";
     public static final String MSG_SCORE = "Test complete. Your score is: %d";
     public static final String MSG_SUCCESS = "Congratulations, you successfully pass the test!";
-    public static final String MSG_FAIL = String.format("Sadly you couldn't pass the test. Type '%s' to try again or any symbol for exit", CMD_YES);
+    public static final String MSG_FAIL = "Sadly, you couldn't pass the test :(";
+    public static final String MSG_TRY_AGAIN = String.format("Would you like to take the test one more time? Type '%s' to try again", CMD_YES);
     public static final String MSG_GOOD_BY = "Good by!";
     public static final String PROMPT = ">";
 
@@ -41,11 +42,13 @@ public class AppRunner {
     }
 
     public void execute() {
-        if (!sayHello()) {
-            sayGoodBy();
-            return;
+        if (sayHello()) {
+            boolean res;
+            do {
+                res = run();
+            } while (res);
         }
-        run();
+        sayGoodBy();
     }
 
     private boolean processUserAnswer(int questionIndex) {
@@ -53,21 +56,19 @@ public class AppRunner {
         ioService.println(questionConverter.convertQuestionToString(questionIndex, testingService.getQuestion(questionIndex)));
         ioService.println(MSG_QUESTION);
         do {
-            var s = ioService.readString(PROMPT).toLowerCase();
-            if (s.equals(CMD_EXIT)) {
-                result = false;
-                break;
-            }
-            if (s.length() != 1) {
-                ioService.println(ERR_STRING_TOO_LONG);
-            } else {
-                var answerIndex = s.charAt(0) - 'a';
-                try {
-                    testingService.answerQuestion(questionIndex, answerIndex);
+            try {
+                var ch = ioService.readChar(PROMPT);
+                if (ch == CMD_EXIT) {
+                    result = false;
                     break;
-                } catch (IndexOutOfBoundsException e) {
-                    ioService.println(ERR_OUT_OF_BOUNDS);
                 }
+                var answerIndex = ch - 'a';
+                testingService.answerQuestion(questionIndex, answerIndex);
+                break;
+            } catch (NotCharException e) {
+                ioService.println(ERR_STRING_TOO_LONG);
+            } catch (IndexOutOfBoundsException e) {
+                ioService.println(ERR_OUT_OF_BOUNDS);
             }
         } while (true);
         return result;
@@ -77,27 +78,38 @@ public class AppRunner {
         ioService.println(MSG_GOOD_BY);
     }
 
-    private void run() {
+    private boolean answerQuestions() {
         for (var index = 0; index < testingService.getQuestionCount(); index++) {
             if (!processUserAnswer(index)) {
-                sayGoodBy();
-                return;
+                return false;
             }
         }
+        return true;
+    }
+
+
+    private boolean run() {
+        if (!answerQuestions()) {
+            return false;
+        }
         var score = testingService.getUser().getScore();
-        ioService.println(String.format(MSG_SCORE, score));
+        ioService.printlnFormat(MSG_SCORE, score);
         if (score >= scoreToPass) {
             ioService.println(MSG_SUCCESS);
-            sayGoodBy();
         } else {
             ioService.println(MSG_FAIL);
-            var s = ioService.readString(PROMPT);
-            if (s.toLowerCase().equals(CMD_YES)) {
+        }
+        ioService.println(MSG_TRY_AGAIN);
+        try {
+            var ch = ioService.readChar(PROMPT);
+            if (ch == CMD_YES) {
                 testingService.tryAgain();
-                run();
+                return true;
             } else {
-                sayGoodBy();
+                return false;
             }
+        } catch (NotCharException e) {
+            return false;
         }
 
     }
@@ -105,16 +117,16 @@ public class AppRunner {
     private boolean sayHello() {
         ioService.println(MSG_WELCOME);
         do {
-            var userName = ioService.readString(PROMPT);
-            if (userName.toLowerCase().equals(CMD_EXIT)) {
-                return false;
-            }
-            if (userName.isEmpty()) {
+            try {
+                var userName = ioService.readString(PROMPT);
+                if (userName.equalsIgnoreCase(Character.toString(CMD_EXIT))) {
+                    return false;
+                }
+               testingService.registerUser(userName);
+               ioService.printlnFormat(MSG_HELLO, userName, scoreToPass);
+               return true;
+            } catch (EmptyStringException e) {
                 ioService.println(ERR_EMPTY_STRING);
-            } else {
-                testingService.registerUser(userName);
-                ioService.println(String.format(MSG_HELLO, userName, scoreToPass));
-                return true;
             }
         } while (true);
     }
