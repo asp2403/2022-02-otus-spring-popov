@@ -13,8 +13,9 @@ class QuestionTest {
     void shouldHaveCorrectConstructor() {
         var body = "My question";
         var answers = Arrays.asList(new Answer("My First Answer", true), new Answer("My Second Answer", false));
-        var question = new Question(body, answers);
+        var question = new Question(0, body, answers);
         assertAll(
+                () -> assertEquals(0, question.getIndex()),
                 () -> assertEquals(body, question.getBody()),
                 () -> assertEquals(answers, question.getAnswers())
         );

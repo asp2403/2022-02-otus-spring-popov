@@ -12,26 +12,8 @@ class UserTest {
     void shouldHaveCorrectConstructor() {
         var user = new User("Vasya");
         assertAll(
-                () -> assertEquals("Vasya", user.getName()),
-                () -> assertEquals(0, user.getScore())
+                () -> assertEquals("Vasya", user.getName())
         );
-    }
-
-    @DisplayName("должен корректно увеличивать результат")
-    @Test
-    void shouldCorrectAddScore() {
-        var user = new User("Vasya");
-        var newScore = user.addScore();
-        assertEquals(1, newScore);
-    }
-
-    @DisplayName("должен корректно сбрасывать результат")
-    @Test
-    void shouldCorrectResetScore() {
-        var user = new User("Vasya");
-        user.addScore();
-        var score = user.resetScore();
-        assertEquals(0, score);
     }
 
 }

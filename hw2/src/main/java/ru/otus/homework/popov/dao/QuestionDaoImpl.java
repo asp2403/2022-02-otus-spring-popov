@@ -26,7 +26,8 @@ public class QuestionDaoImpl implements QuestionDao {
         var list = new ArrayList<Question>();
         try (CSVReader reader = new CSVReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(resourceName))))) {
             List<String[]> allRows = reader.readAll();
-            for (var strArray : allRows) {
+            for (var index = 0; index < allRows.size(); index ++) {
+                var strArray = allRows.get(index);
                 if (strArray.length >= 3 && (strArray.length % 2 == 1)) {
                     var answers = new ArrayList<Answer>();
                     var i = 1;
@@ -34,7 +35,7 @@ public class QuestionDaoImpl implements QuestionDao {
                         answers.add(new Answer(strArray[i], strArray[i + 1].equals("1")));
                         i+= 2;
                     } while (i < strArray.length);
-                    list.add(new Question(strArray[0], answers));
+                    list.add(new Question(index, strArray[0], answers));
                 }
             }
         } catch (Exception e) {

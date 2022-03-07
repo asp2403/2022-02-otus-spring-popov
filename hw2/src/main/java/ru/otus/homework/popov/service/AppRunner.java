@@ -2,6 +2,7 @@ package ru.otus.homework.popov.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.homework.popov.domain.Question;
 import ru.otus.homework.popov.exceptions.EmptyStringException;
 import ru.otus.homework.popov.exceptions.NotCharException;
 
@@ -42,18 +43,28 @@ public class AppRunner {
     }
 
     public void execute() {
-        if (sayHello()) {
-            boolean res;
-            do {
-                res = run();
-            } while (res);
+        sayHello();
+        if (registerUser()) {
+            run();
         }
         sayGoodBy();
     }
 
-    private boolean processUserAnswer(int questionIndex) {
+    private void run() {
+        do {
+            if(!runTest()) {
+                return;
+            }
+            if (!wantTryAgain()) {
+                return;
+            }
+        } while (true);
+    }
+
+
+    private boolean processUserAnswer(Question question) {
         var result = true;
-        ioService.println(questionConverter.convertQuestionToString(questionIndex, testingService.getQuestion(questionIndex)));
+        ioService.println(questionConverter.convertQuestionToString(question));
         ioService.println(MSG_QUESTION);
         do {
             try {
@@ -63,7 +74,7 @@ public class AppRunner {
                     break;
                 }
                 var answerIndex = ch - 'a';
-                testingService.answerQuestion(questionIndex, answerIndex);
+                testingService.answerQuestion(answerIndex);
                 break;
             } catch (NotCharException e) {
                 ioService.println(ERR_STRING_TOO_LONG);
@@ -79,31 +90,37 @@ public class AppRunner {
     }
 
     private boolean answerQuestions() {
-        for (var index = 0; index < testingService.getQuestionCount(); index++) {
-            if (!processUserAnswer(index)) {
+        var question = testingService.getNextQuestion();
+        while(question != null) {
+            if (!processUserAnswer(question)) {
                 return false;
             }
+            question = testingService.getNextQuestion();
         }
         return true;
     }
 
 
-    private boolean run() {
+    private boolean runTest() {
         if (!answerQuestions()) {
             return false;
         }
-        var score = testingService.getUser().getScore();
+        var score = testingService.getScore();
         ioService.printlnFormat(MSG_SCORE, score);
         if (score >= scoreToPass) {
             ioService.println(MSG_SUCCESS);
         } else {
             ioService.println(MSG_FAIL);
         }
+        return true;
+    }
+
+    private boolean wantTryAgain() {
         ioService.println(MSG_TRY_AGAIN);
         try {
             var ch = ioService.readChar(PROMPT);
             if (ch == CMD_YES) {
-                testingService.tryAgain();
+                testingService.resetTest();
                 return true;
             } else {
                 return false;
@@ -114,20 +131,23 @@ public class AppRunner {
 
     }
 
-    private boolean sayHello() {
-        ioService.println(MSG_WELCOME);
+    private boolean registerUser() {
         do {
             try {
                 var userName = ioService.readString(PROMPT);
                 if (userName.equalsIgnoreCase(Character.toString(CMD_EXIT))) {
                     return false;
                 }
-               testingService.registerUser(userName);
-               ioService.printlnFormat(MSG_HELLO, userName, scoreToPass);
-               return true;
+                ioService.printlnFormat(MSG_HELLO, userName, scoreToPass);
+                testingService.startTest(userName);
+                return true;
             } catch (EmptyStringException e) {
                 ioService.println(ERR_EMPTY_STRING);
             }
         } while (true);
+    }
+
+    private void sayHello() {
+        ioService.println(MSG_WELCOME);
     }
 }

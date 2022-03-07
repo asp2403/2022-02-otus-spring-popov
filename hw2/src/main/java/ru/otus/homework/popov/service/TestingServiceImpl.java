@@ -10,52 +10,53 @@ import java.util.List;
 @Service
 public class TestingServiceImpl implements TestingService {
 
-    private final QuestionDao questionDao;
+    private final List<Question> questions;
 
-    private User user;
+    private final ScoreService scoreService;
 
-    private List<Question> questions;
+    private int questionIndex;
 
-    public TestingServiceImpl(QuestionDao questionDao) {
-        this.questionDao = questionDao;
+    public TestingServiceImpl(QuestionService questionService, ScoreService scoreService) {
+        questions = questionService.loadQuestions();
+        this.scoreService = scoreService;
+    }
+
+    public void startTest(String userName) {
+        scoreService.registerUser(userName);
+        resetTest();
     }
 
     @Override
-    public void registerUser(String userName) {
-        user = new User(userName);
-        loadQuestions();
+    public Question getNextQuestion() {
+        questionIndex++;
+        return getQuestion();
     }
 
-    private void loadQuestions() {
-        questions = questionDao.loadQuestions();
-    }
-
-    @Override
-    public void answerQuestion(int questionIndex, int answerIndex) {
-        var question = questions.get(questionIndex);
-        var answer = question.getAnswers().get(answerIndex);
-        if (answer.isCorrect()) {
-            user.addScore();
+    private Question getQuestion() {
+        if (questionIndex < questions.size()) {
+            return questions.get(questionIndex);
+        } else {
+            return null;
         }
     }
 
     @Override
-    public void tryAgain() {
-        user.resetScore();
+    public void answerQuestion(int answerIndex) {
+        var question = getQuestion();
+        var answer = question.getAnswers().get(answerIndex);
+        if (answer.isCorrect()) {
+            scoreService.addScore();
+        }
     }
 
     @Override
-    public User getUser() {
-        return user;
+    public int getScore() {
+        return scoreService.getScore();
     }
 
     @Override
-    public Question getQuestion(int index) {
-        return questions.get(index);
-    }
-
-    @Override
-    public int getQuestionCount() {
-        return questions.size();
+    public void resetTest() {
+        scoreService.resetScore();
+        questionIndex = -1;
     }
 }

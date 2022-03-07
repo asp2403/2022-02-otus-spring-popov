@@ -21,9 +21,10 @@ import static org.mockito.BDDMockito.given;
 class TestingServiceImplTest {
 
     @Mock
-    private QuestionDao questionDao;
+    private QuestionService questionService;
 
-    @InjectMocks
+    private ScoreService scoreService;
+
     private TestingServiceImpl testingService;
 
     private String userName = "Vasya";
@@ -34,48 +35,44 @@ class TestingServiceImplTest {
     @BeforeEach
     private void setUp() {
         questions = Arrays.asList(
-                new Question("Question1", Arrays.asList(new Answer("Answer11", true), new Answer("Answer12", false))),
-                new Question("Question2", Arrays.asList(new Answer("Answer21", false), new Answer("Answer22", true))));
-        given(questionDao.loadQuestions()).willReturn(questions);
-        testingService.registerUser(userName);
+                new Question(0, "Question1", Arrays.asList(new Answer("Answer11", true), new Answer("Answer12", false))),
+                new Question(1, "Question2", Arrays.asList(new Answer("Answer21", false), new Answer("Answer22", true))));
+        given(questionService.loadQuestions()).willReturn(questions);
+        scoreService = new ScoreServiceImpl();
+        testingService = new TestingServiceImpl(questionService, scoreService);
+        testingService.startTest(userName);
     }
 
     @DisplayName("должен корректно регистрировать пользователя")
     @Test
     void shouldCorrectRegisterUser() {
         assertAll(
-                () -> assertEquals(userName, testingService.getUser().getName()),
-                () -> assertEquals(0, testingService.getUser().getScore())
+                () -> assertEquals(userName, scoreService.getUser().getName()),
+                () -> assertEquals(0, scoreService.getScore())
         );
     }
 
     @DisplayName("должен корректно учитывать ответ на вопрос")
     @Test
     void shouldCorrectAnswerQuestion() {
-        testingService.answerQuestion(0, 0);
-        testingService.answerQuestion(1, 0);
-        assertEquals(1, testingService.getUser().getScore());
+        var question = testingService.getNextQuestion();
+        while (question != null) {
+            testingService.answerQuestion(0);
+            question = testingService.getNextQuestion();
+        }
+        assertEquals(1, testingService.getScore());
     }
 
     @DisplayName("должен корректно обрабатывать повторную попытку")
     @Test
     void shouldCorrectTryAgain() {
-        testingService.answerQuestion(0, 0);
-        testingService.answerQuestion(1, 0);
-        testingService.tryAgain();
-        assertEquals(0, testingService.getUser().getScore());
+        var question = testingService.getNextQuestion();
+        while (question != null) {
+            testingService.answerQuestion(0);
+            question = testingService.getNextQuestion();
+        }
+        testingService.resetTest();
+        assertEquals(0, testingService.getScore());
     }
 
-    @DisplayName("должен возвращать правильный вопрос")
-    @Test
-    void shouldCorrectGetQuestion() {
-        var question = questions.get(1);
-        assertEquals(question, testingService.getQuestion(1));
-    }
-
-    @DisplayName("должен корректно возвращать количество вопросов")
-    @Test
-    void shouldCorrectGetQuestionCount() {
-        assertEquals(questions.size(), testingService.getQuestionCount());
-    }
 }

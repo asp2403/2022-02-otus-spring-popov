@@ -4,17 +4,13 @@ import ru.otus.homework.popov.domain.Question;
 import ru.otus.homework.popov.domain.User;
 
 public interface TestingService {
+    void startTest(String userName);
 
-    void registerUser(String userName);
+    void answerQuestion(int answerIndex);
 
-    void answerQuestion(int questionIndex, int answerIndex);
+    Question getNextQuestion();
 
-    void tryAgain();
+    int getScore();
 
-    User getUser();
-
-    Question getQuestion(int index);
-
-    int getQuestionCount();
-
+    void resetTest();
 }
