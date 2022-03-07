@@ -10,9 +10,14 @@ class UserTest {
     @DisplayName("должен корректно создаваться конструктором")
     @Test
     void shouldHaveCorrectConstructor() {
-        var user = new User("Vasya");
+        var name = "Vasya";
+        var surname = "Pupkin";
+        var fullName = name + " " + surname;
+        var user = new User("Vasya", "Pupkin");
         assertAll(
-                () -> assertEquals("Vasya", user.getName())
+                () -> assertEquals(name, user.getName()),
+                () -> assertEquals(surname, user.getSurname()),
+                () -> assertEquals(fullName, user.getFullName())
         );
     }
 

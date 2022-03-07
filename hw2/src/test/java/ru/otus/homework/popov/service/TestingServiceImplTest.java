@@ -27,8 +27,6 @@ class TestingServiceImplTest {
 
     private TestingServiceImpl testingService;
 
-    private String userName = "Vasya";
-
     private List<Question> questions;
 
 
@@ -40,16 +38,7 @@ class TestingServiceImplTest {
         given(questionService.loadQuestions()).willReturn(questions);
         scoreService = new ScoreServiceImpl();
         testingService = new TestingServiceImpl(questionService, scoreService);
-        testingService.startTest(userName);
-    }
-
-    @DisplayName("должен корректно регистрировать пользователя")
-    @Test
-    void shouldCorrectRegisterUser() {
-        assertAll(
-                () -> assertEquals(userName, scoreService.getUser().getName()),
-                () -> assertEquals(0, scoreService.getScore())
-        );
+        testingService.startTest();
     }
 
     @DisplayName("должен корректно учитывать ответ на вопрос")
@@ -71,7 +60,7 @@ class TestingServiceImplTest {
             testingService.answerQuestion(0);
             question = testingService.getNextQuestion();
         }
-        testingService.resetTest();
+        testingService.startTest();
         assertEquals(0, testingService.getScore());
     }
 

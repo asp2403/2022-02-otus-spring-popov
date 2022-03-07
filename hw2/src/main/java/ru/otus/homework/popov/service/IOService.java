@@ -1,20 +1,23 @@
 package ru.otus.homework.popov.service;
 
+import java.util.function.Function;
+
 public interface IOService {
 
-    void print(String s);
+    int ERR_BLANK_STRING = 1;
+    int ERR_CHAR_EXPECTED = 2;
 
-    void printFormat(String s, Object... args);
+    void print(String s);
 
     void println(String s);
 
     void printlnFormat(String s, Object... args);
 
-    String readString();
-
     String readString(String prompt);
 
-    char readChar();
+    String readNotEmptyString(String prompt, Function<Integer, String> getErrorMessage);
 
-    char readChar(String prompt);
+    String readNotEmptyString(String prompt, String description, Function<Integer, String> getErrorMessage);
+
+    char readChar(String prompt, Function<Integer, String> getErrorMessage);
 }

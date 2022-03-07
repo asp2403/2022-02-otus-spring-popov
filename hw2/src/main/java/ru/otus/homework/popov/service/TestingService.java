@@ -4,7 +4,7 @@ import ru.otus.homework.popov.domain.Question;
 import ru.otus.homework.popov.domain.User;
 
 public interface TestingService {
-    void startTest(String userName);
+    void startTest();
 
     void answerQuestion(int answerIndex);
 
@@ -12,5 +12,4 @@ public interface TestingService {
 
     int getScore();
 
-    void resetTest();
 }

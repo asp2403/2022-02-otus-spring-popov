@@ -1,12 +1,10 @@
 package ru.otus.homework.popov.service;
 
 import org.springframework.stereotype.Service;
-import ru.otus.homework.popov.exceptions.EmptyStringException;
-import ru.otus.homework.popov.exceptions.NotCharException;
 
 import java.io.PrintStream;
-import java.util.Locale;
 import java.util.Scanner;
+import java.util.function.Function;
 
 @Service
 public class IOServiceImpl implements IOService{
@@ -26,11 +24,6 @@ public class IOServiceImpl implements IOService{
     }
 
     @Override
-    public void printFormat(String s, Object... args) {
-        print(String.format(s, args));
-    }
-
-    @Override
     public void println(String s) {
         output.println(s);
     }
@@ -40,37 +33,44 @@ public class IOServiceImpl implements IOService{
         println(String.format(s, args));
     }
 
+    @Override
+    public String readString(String prompt) {
+        printPrompt(prompt);
+        return scanner.nextLine().trim();
+    }
+
     private void printPrompt(String prompt) {
         output.print(prompt);
     }
 
     @Override
-    public String readString() {
-        var s = scanner.nextLine().trim();
-        if (s.isEmpty()) {
-            throw new EmptyStringException("String is empty!");
-        }
-        return s;
+    public String readNotEmptyString(String prompt, Function<Integer, String> getErrorMessage) {
+        do {
+            var s = readString(prompt);
+            if (s.isEmpty()) {
+                println(getErrorMessage.apply(ERR_BLANK_STRING));
+            } else {
+                return s;
+            }
+        } while(true);
     }
 
     @Override
-    public String readString(String prompt) {
-        printPrompt(prompt);
-        return readString();
+    public String readNotEmptyString(String prompt, String description, Function<Integer, String> getErrorMessage) {
+        println(description);
+        return readNotEmptyString(prompt, getErrorMessage);
     }
 
     @Override
-    public char readChar() {
-        var s = scanner.nextLine().trim().toLowerCase();
-        if (s.length() != 1) {
-            throw new NotCharException("Not a char!");
-        }
-        return s.charAt(0);
+    public char readChar(String prompt, Function<Integer, String> getErrorMessage) {
+        do {
+            var s = readString(prompt).toLowerCase();
+            if (s.length() != 1) {
+                println(getErrorMessage.apply(ERR_CHAR_EXPECTED));
+            } else {
+                return s.charAt(0);
+            }
+        } while (true);
     }
 
-    @Override
-    public char readChar(String prompt) {
-        printPrompt(prompt);
-        return readChar();
-    }
 }

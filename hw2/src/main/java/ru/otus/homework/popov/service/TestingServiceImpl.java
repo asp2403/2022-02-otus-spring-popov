@@ -21,9 +21,9 @@ public class TestingServiceImpl implements TestingService {
         this.scoreService = scoreService;
     }
 
-    public void startTest(String userName) {
-        scoreService.registerUser(userName);
-        resetTest();
+    public void startTest() {
+        scoreService.resetScore();
+        questionIndex = -1;
     }
 
     @Override
@@ -52,11 +52,5 @@ public class TestingServiceImpl implements TestingService {
     @Override
     public int getScore() {
         return scoreService.getScore();
-    }
-
-    @Override
-    public void resetTest() {
-        scoreService.resetScore();
-        questionIndex = -1;
     }
 }

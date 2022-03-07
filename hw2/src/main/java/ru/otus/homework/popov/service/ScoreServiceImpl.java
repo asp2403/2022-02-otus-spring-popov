@@ -6,19 +6,7 @@ import ru.otus.homework.popov.domain.User;
 @Service
 public class ScoreServiceImpl implements ScoreService {
 
-    private User user;
     private int score;
-
-    @Override
-    public void registerUser(String userName) {
-        user = new User(userName);
-        resetScore();
-    }
-
-    @Override
-    public User getUser() {
-        return user;
-    }
 
     @Override
     public int getScore() {
