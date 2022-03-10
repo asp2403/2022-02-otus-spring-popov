@@ -3,54 +3,56 @@ package ru.otus.homework.popov.service;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.domain.Question;
+import ru.otus.homework.popov.domain.TestingResult;
 import ru.otus.homework.popov.domain.User;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class TestingServiceImpl implements TestingService {
 
-    private final List<Question> questions;
+    private final IOService ioService;
+    private final QuestionService questionService;
+    private final QuestionConverter questionConverter;
 
-    private final ScoreService scoreService;
-
-    private int questionIndex;
-
-    public TestingServiceImpl(QuestionService questionService, ScoreService scoreService) {
-        questions = questionService.loadQuestions();
-        this.scoreService = scoreService;
+    public TestingServiceImpl(QuestionService questionService, IOService ioService, QuestionConverter questionConverter) {
+        this.questionService = questionService;
+        this.ioService = ioService;
+        this.questionConverter = questionConverter;
     }
 
-    public void startTest() {
-        scoreService.resetScore();
-        questionIndex = -1;
+    private boolean askQuestion(Question q, AtomicBoolean isTerminated) {
+        ioService.println(questionConverter.convertQuestionToString(q));
+        ioService.println(Messages.MSG_QUESTION);
+        do {
+            try {
+                var ch = ioService.readChar(Messages.PROMPT, Messages::getIOErrorMessage);
+                if (ch == Messages.CMD_EXIT) {
+                    isTerminated.set(true);
+                    return false;
+                }
+                var answerIndex = ch - 'a';
+                return q.getAnswers().get(answerIndex).isCorrect();
+            } catch (IndexOutOfBoundsException e) {
+                ioService.println(Messages.ERR_OUT_OF_BOUNDS);
+            }
+        } while (true);
     }
 
     @Override
-    public Question getNextQuestion() {
-        questionIndex++;
-        return getQuestion();
-    }
-
-    private Question getQuestion() {
-        if (questionIndex < questions.size()) {
-            return questions.get(questionIndex);
-        } else {
-            return null;
+    public TestingResult testUser(User user, AtomicBoolean isTerminated) {
+        var testingResult = new TestingResult(user);
+        List<Question> questions = questionService.loadQuestions();
+        for (var q : questions) {
+            var answerResult = askQuestion(q, isTerminated);
+            if (!isTerminated.get()) {
+                testingResult.applyAnswer(answerResult);
+            } else {
+                return null;
+            }
         }
-    }
-
-    @Override
-    public void answerQuestion(int answerIndex) {
-        var question = getQuestion();
-        var answer = question.getAnswers().get(answerIndex);
-        if (answer.isCorrect()) {
-            scoreService.addScore();
-        }
-    }
-
-    @Override
-    public int getScore() {
-        return scoreService.getScore();
+        return testingResult;
     }
 }

@@ -10,12 +10,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
+import ru.otus.homework.popov.domain.User;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TestingServiceImplTest {
@@ -23,45 +29,34 @@ class TestingServiceImplTest {
     @Mock
     private QuestionService questionService;
 
-    private ScoreService scoreService;
+    @Mock
+    private IOService ioService;
 
+    @Mock
+    private QuestionConverter questionConverter;
+
+    @InjectMocks
     private TestingServiceImpl testingService;
 
-    private List<Question> questions;
-
-
-    @BeforeEach
-    private void setUp() {
-        questions = Arrays.asList(
+    @DisplayName("должен корректно тестировать пользователя")
+    @Test
+    void shouldCorrectTestUser() {
+        var questions = Arrays.asList(
                 new Question(0, "Question1", Arrays.asList(new Answer("Answer11", true), new Answer("Answer12", false))),
                 new Question(1, "Question2", Arrays.asList(new Answer("Answer21", false), new Answer("Answer22", true))));
         given(questionService.loadQuestions()).willReturn(questions);
-        scoreService = new ScoreServiceImpl();
-        testingService = new TestingServiceImpl(questionService, scoreService);
-        testingService.startTest();
+        given(ioService.readChar(any(), any())).willReturn('a');
+        given(questionConverter.convertQuestionToString(any())).willReturn("");
+        var user = new User("Vasya", "Pupkin");
+        var isTerminated = new AtomicBoolean(false);
+        var testingResult = testingService.testUser(user, isTerminated);
+        verify(ioService, times(2)).readChar(any(), any());
+        assertAll(
+                () -> assertEquals(1, testingResult.getScore()),
+                () -> assertEquals(false, isTerminated.get())
+        );
+
     }
 
-    @DisplayName("должен корректно учитывать ответ на вопрос")
-    @Test
-    void shouldCorrectAnswerQuestion() {
-        var question = testingService.getNextQuestion();
-        while (question != null) {
-            testingService.answerQuestion(0);
-            question = testingService.getNextQuestion();
-        }
-        assertEquals(1, testingService.getScore());
-    }
-
-    @DisplayName("должен корректно обрабатывать повторную попытку")
-    @Test
-    void shouldCorrectTryAgain() {
-        var question = testingService.getNextQuestion();
-        while (question != null) {
-            testingService.answerQuestion(0);
-            question = testingService.getNextQuestion();
-        }
-        testingService.startTest();
-        assertEquals(0, testingService.getScore());
-    }
 
 }
