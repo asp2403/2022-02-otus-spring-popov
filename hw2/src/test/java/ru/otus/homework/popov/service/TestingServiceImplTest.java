@@ -38,6 +38,8 @@ class TestingServiceImplTest {
     @InjectMocks
     private TestingServiceImpl testingService;
 
+    private List<Question> questions;
+
     @DisplayName("должен корректно тестировать пользователя")
     @Test
     void shouldCorrectTestUser() {
@@ -45,18 +47,19 @@ class TestingServiceImplTest {
                 new Question(0, "Question1", Arrays.asList(new Answer("Answer11", true), new Answer("Answer12", false))),
                 new Question(1, "Question2", Arrays.asList(new Answer("Answer21", false), new Answer("Answer22", true))));
         given(questionService.loadQuestions()).willReturn(questions);
-        given(ioService.readChar(any(), any())).willReturn('a');
         given(questionConverter.convertQuestionToString(any())).willReturn("");
+        given(ioService.readChar(any(), any())).willReturn('a');
         var user = new User("Vasya", "Pupkin");
-        var isTerminated = new AtomicBoolean(false);
-        var testingResult = testingService.testUser(user, isTerminated);
+        var testingResult = testingService.testUser(user);
         verify(ioService, times(2)).readChar(any(), any());
         assertAll(
                 () -> assertEquals(1, testingResult.getScore()),
-                () -> assertEquals(false, isTerminated.get())
+                () -> assertEquals(false, testingResult.isAborted())
         );
 
     }
+
+
 
 
 }

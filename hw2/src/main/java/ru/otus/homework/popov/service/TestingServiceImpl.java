@@ -1,14 +1,11 @@
 package ru.otus.homework.popov.service;
 
 import org.springframework.stereotype.Service;
-import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.domain.Question;
 import ru.otus.homework.popov.domain.TestingResult;
 import ru.otus.homework.popov.domain.User;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class TestingServiceImpl implements TestingService {
@@ -23,18 +20,20 @@ public class TestingServiceImpl implements TestingService {
         this.questionConverter = questionConverter;
     }
 
-    private boolean askQuestion(Question q, AtomicBoolean isTerminated) {
+    private void askQuestion(Question q, TestingResult testingResult) {
         ioService.println(questionConverter.convertQuestionToString(q));
         ioService.println(Messages.MSG_QUESTION);
         do {
             try {
                 var ch = ioService.readChar(Messages.PROMPT, Messages::getIOErrorMessage);
                 if (ch == Messages.CMD_EXIT) {
-                    isTerminated.set(true);
-                    return false;
+                    testingResult.setAborted(true);
+                    return;
                 }
                 var answerIndex = ch - 'a';
-                return q.getAnswers().get(answerIndex).isCorrect();
+                var isCorrect = q.getAnswers().get(answerIndex).isCorrect();
+                testingResult.applyAnswer(isCorrect);
+                break;
             } catch (IndexOutOfBoundsException e) {
                 ioService.println(Messages.ERR_OUT_OF_BOUNDS);
             }
@@ -42,15 +41,13 @@ public class TestingServiceImpl implements TestingService {
     }
 
     @Override
-    public TestingResult testUser(User user, AtomicBoolean isTerminated) {
+    public TestingResult testUser(User user) {
         var testingResult = new TestingResult(user);
         List<Question> questions = questionService.loadQuestions();
         for (var q : questions) {
-            var answerResult = askQuestion(q, isTerminated);
-            if (!isTerminated.get()) {
-                testingResult.applyAnswer(answerResult);
-            } else {
-                return null;
+            askQuestion(q, testingResult);
+            if (testingResult.isAborted()) {
+                break;
             }
         }
         return testingResult;

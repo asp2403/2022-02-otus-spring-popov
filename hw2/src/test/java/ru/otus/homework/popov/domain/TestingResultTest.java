@@ -23,7 +23,8 @@ class TestingResultTest {
     void shouldHaveCorrectConstructor() {
         assertAll(
                 () -> assertEquals(user, testingResult.getUser()),
-                () -> assertEquals(0, testingResult.getScore())
+                () -> assertEquals(0, testingResult.getScore()),
+                () -> assertFalse(testingResult.isAborted())
         );
     }
 
