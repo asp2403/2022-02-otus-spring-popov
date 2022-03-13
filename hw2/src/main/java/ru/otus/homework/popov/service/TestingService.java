@@ -9,6 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface TestingService {
 
-    TestingResult testUser(User user, AtomicBoolean isTerminated);
+    TestingResult testUser(User user);
 
 }
