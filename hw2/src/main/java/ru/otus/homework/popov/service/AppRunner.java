@@ -1,41 +1,35 @@
 package ru.otus.homework.popov.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.popov.domain.User;
 
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class AppRunner {
     private final TestingService testingService;
     private final IOService ioService;
-    private final AppConfig appConfig;
     private final TestingResultPrinter testingResultPrinter;
     private final UserService userService;
 
     public AppRunner(
-            AppConfig appConfig,
             IOService ioService,
             TestingService testingService,
             TestingResultPrinter testingResultPrinter,
             UserService userService) {
         this.ioService = ioService;
         this.testingService = testingService;
-        this.appConfig = appConfig;
         this.testingResultPrinter = testingResultPrinter;
         this.userService = userService;
     }
 
-    public void execute() {
+    public void executeApp() {
         sayHello();
         var user = userService.register();
-        user.ifPresent(this::run);
+        user.ifPresent(this::runTest);
         sayGoodBy();
     }
 
-    private void run(User user) {
+    private void runTest(User user) {
         do {
             var testingResult = testingService.testUser(user);
             if (testingResult.isAborted()) {

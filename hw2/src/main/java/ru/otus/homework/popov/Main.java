@@ -11,6 +11,6 @@ public class Main {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
         AppRunner runner = context.getBean(AppRunner.class);
-        runner.execute();
+        runner.executeApp();
     }
 }
