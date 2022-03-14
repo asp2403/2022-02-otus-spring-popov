@@ -1,0 +1,3 @@
+application:
+  resourceName: questions.csv
+  scoreToPass: 3
