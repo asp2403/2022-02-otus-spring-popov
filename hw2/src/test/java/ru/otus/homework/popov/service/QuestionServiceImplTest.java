@@ -1,19 +1,34 @@
-package ru.otus.homework.popov.dao;
+package ru.otus.homework.popov.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.otus.homework.popov.dao.QuestionDao;
+import ru.otus.homework.popov.dao.QuestionDaoImpl;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 
-class QuestionDaoImplTest {
+@ExtendWith(MockitoExtension.class)
+class QuestionServiceImplTest {
 
-    @DisplayName("должен корректно читать файл ресурсов")
+    @Mock
+    private QuestionDao questionDao;
+
+    @InjectMocks
+    private QuestionServiceImpl questionService;
+
+
+    @DisplayName("должен корректно загружать вопросы")
     @Test
-    void shouldCorrectGetQuestions() {
+    void shouldCorrectLoadQuestions() {
         var questions = Arrays.asList(
                 new Question(0, "Question1", Arrays.asList(
                         new Answer("Answer11", true),
@@ -31,7 +46,7 @@ class QuestionDaoImplTest {
                         new Answer("Answer34", false)
                 ))
         );
-        var dao = new QuestionDaoImpl("test.csv");
-        assertEquals(questions, dao.loadQuestions());
+        given(questionDao.loadQuestions()).willReturn(questions);
+        assertEquals(questions, questionService.loadQuestions());
     }
 }

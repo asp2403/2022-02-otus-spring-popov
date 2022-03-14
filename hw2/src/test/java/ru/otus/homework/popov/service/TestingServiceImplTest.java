@@ -10,72 +10,56 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
+import ru.otus.homework.popov.domain.User;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TestingServiceImplTest {
 
     @Mock
-    private QuestionDao questionDao;
+    private QuestionService questionService;
+
+    @Mock
+    private IOService ioService;
+
+    @Mock
+    private QuestionConverter questionConverter;
 
     @InjectMocks
     private TestingServiceImpl testingService;
 
-    private String userName = "Vasya";
-
     private List<Question> questions;
 
-
-    @BeforeEach
-    private void setUp() {
-        questions = Arrays.asList(
-                new Question("Question1", Arrays.asList(new Answer("Answer11", true), new Answer("Answer12", false))),
-                new Question("Question2", Arrays.asList(new Answer("Answer21", false), new Answer("Answer22", true))));
-        given(questionDao.loadQuestions()).willReturn(questions);
-        testingService.registerUser(userName);
-    }
-
-    @DisplayName("должен корректно регистрировать пользователя")
+    @DisplayName("должен корректно тестировать пользователя")
     @Test
-    void shouldCorrectRegisterUser() {
+    void shouldCorrectTestUser() {
+        var questions = Arrays.asList(
+                new Question(0, "Question1", Arrays.asList(new Answer("Answer11", true), new Answer("Answer12", false))),
+                new Question(1, "Question2", Arrays.asList(new Answer("Answer21", false), new Answer("Answer22", true))));
+        given(questionService.loadQuestions()).willReturn(questions);
+        given(questionConverter.convertQuestionToString(any())).willReturn("");
+        given(ioService.readChar(any(), any())).willReturn('a');
+        var user = new User("Vasya", "Pupkin");
+        var testingResult = testingService.testUser(user);
+        verify(ioService, times(2)).readChar(any(), any());
         assertAll(
-                () -> assertEquals(userName, testingService.getUser().getName()),
-                () -> assertEquals(0, testingService.getUser().getScore())
+                () -> assertEquals(1, testingResult.getScore()),
+                () -> assertEquals(false, testingResult.isAborted())
         );
+
     }
 
-    @DisplayName("должен корректно учитывать ответ на вопрос")
-    @Test
-    void shouldCorrectAnswerQuestion() {
-        testingService.answerQuestion(0, 0);
-        testingService.answerQuestion(1, 0);
-        assertEquals(1, testingService.getUser().getScore());
-    }
 
-    @DisplayName("должен корректно обрабатывать повторную попытку")
-    @Test
-    void shouldCorrectTryAgain() {
-        testingService.answerQuestion(0, 0);
-        testingService.answerQuestion(1, 0);
-        testingService.tryAgain();
-        assertEquals(0, testingService.getUser().getScore());
-    }
 
-    @DisplayName("должен возвращать правильный вопрос")
-    @Test
-    void shouldCorrectGetQuestion() {
-        var question = questions.get(1);
-        assertEquals(question, testingService.getQuestion(1));
-    }
 
-    @DisplayName("должен корректно возвращать количество вопросов")
-    @Test
-    void shouldCorrectGetQuestionCount() {
-        assertEquals(questions.size(), testingService.getQuestionCount());
-    }
 }

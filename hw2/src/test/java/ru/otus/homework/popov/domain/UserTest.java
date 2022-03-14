@@ -10,28 +10,15 @@ class UserTest {
     @DisplayName("должен корректно создаваться конструктором")
     @Test
     void shouldHaveCorrectConstructor() {
-        var user = new User("Vasya");
+        var name = "Vasya";
+        var surname = "Pupkin";
+        var fullName = name + " " + surname;
+        var user = new User("Vasya", "Pupkin");
         assertAll(
-                () -> assertEquals("Vasya", user.getName()),
-                () -> assertEquals(0, user.getScore())
+                () -> assertEquals(name, user.getName()),
+                () -> assertEquals(surname, user.getSurname()),
+                () -> assertEquals(fullName, user.getFullName())
         );
-    }
-
-    @DisplayName("должен корректно увеличивать результат")
-    @Test
-    void shouldCorrectAddScore() {
-        var user = new User("Vasya");
-        var newScore = user.addScore();
-        assertEquals(1, newScore);
-    }
-
-    @DisplayName("должен корректно сбрасывать результат")
-    @Test
-    void shouldCorrectResetScore() {
-        var user = new User("Vasya");
-        user.addScore();
-        var score = user.resetScore();
-        assertEquals(0, score);
     }
 
 }

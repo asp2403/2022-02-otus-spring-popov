@@ -1,8 +1,8 @@
 package ru.otus.homework.popov.service;
 
 import org.springframework.stereotype.Service;
-import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.domain.Question;
+import ru.otus.homework.popov.domain.TestingResult;
 import ru.otus.homework.popov.domain.User;
 
 import java.util.List;
@@ -10,52 +10,46 @@ import java.util.List;
 @Service
 public class TestingServiceImpl implements TestingService {
 
-    private final QuestionDao questionDao;
+    private final IOService ioService;
+    private final QuestionService questionService;
+    private final QuestionConverter questionConverter;
 
-    private User user;
+    public TestingServiceImpl(QuestionService questionService, IOService ioService, QuestionConverter questionConverter) {
+        this.questionService = questionService;
+        this.ioService = ioService;
+        this.questionConverter = questionConverter;
+    }
 
-    private List<Question> questions;
-
-    public TestingServiceImpl(QuestionDao questionDao) {
-        this.questionDao = questionDao;
+    private void askQuestion(Question q, TestingResult testingResult) {
+        ioService.println(questionConverter.convertQuestionToString(q));
+        ioService.println(Messages.MSG_QUESTION);
+        do {
+            try {
+                var ch = ioService.readChar(Messages.PROMPT, Messages::getIOErrorMessage);
+                if (ch == Messages.CMD_EXIT) {
+                    testingResult.setAborted(true);
+                    return;
+                }
+                var answerIndex = ch - 'a';
+                var isCorrect = q.getAnswers().get(answerIndex).isCorrect();
+                testingResult.applyAnswer(isCorrect);
+                break;
+            } catch (IndexOutOfBoundsException e) {
+                ioService.println(Messages.ERR_OUT_OF_BOUNDS);
+            }
+        } while (true);
     }
 
     @Override
-    public void registerUser(String userName) {
-        user = new User(userName);
-        loadQuestions();
-    }
-
-    private void loadQuestions() {
-        questions = questionDao.loadQuestions();
-    }
-
-    @Override
-    public void answerQuestion(int questionIndex, int answerIndex) {
-        var question = questions.get(questionIndex);
-        var answer = question.getAnswers().get(answerIndex);
-        if (answer.isCorrect()) {
-            user.addScore();
+    public TestingResult testUser(User user) {
+        var testingResult = new TestingResult(user);
+        List<Question> questions = questionService.loadQuestions();
+        for (var q : questions) {
+            askQuestion(q, testingResult);
+            if (testingResult.isAborted()) {
+                break;
+            }
         }
-    }
-
-    @Override
-    public void tryAgain() {
-        user.resetScore();
-    }
-
-    @Override
-    public User getUser() {
-        return user;
-    }
-
-    @Override
-    public Question getQuestion(int index) {
-        return questions.get(index);
-    }
-
-    @Override
-    public int getQuestionCount() {
-        return questions.size();
+        return testingResult;
     }
 }
