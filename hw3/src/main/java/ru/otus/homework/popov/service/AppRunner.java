@@ -10,16 +10,19 @@ public class AppRunner {
     private final IOService ioService;
     private final TestingResultPrinter testingResultPrinter;
     private final UserService userService;
+    private final MessageService messageService;
 
     public AppRunner(
             IOService ioService,
             TestingService testingService,
             TestingResultPrinter testingResultPrinter,
-            UserService userService) {
+            UserService userService,
+            MessageService messageService) {
         this.ioService = ioService;
         this.testingService = testingService;
         this.testingResultPrinter = testingResultPrinter;
         this.userService = userService;
+        this.messageService = messageService;
     }
 
     public void executeApp() {
@@ -43,16 +46,16 @@ public class AppRunner {
     }
 
     private void sayGoodBy() {
-        ioService.println(Messages.MSG_GOOD_BY);
+        ioService.println(messageService.getMessage("MSG_GOOD_BY"));
     }
 
     private boolean wantExit() {
-        ioService.println(Messages.MSG_TRY_AGAIN);
-        var s = ioService.readString(Messages.PROMPT);
-        return !s.equalsIgnoreCase(Character.toString(Messages.CMD_YES));
+        ioService.printlnFormat(messageService.getMessage("MSG_TRY_AGAIN"), messageService.CMD_YES);
+        var s = ioService.readString(messageService.PROMPT);
+        return !s.equalsIgnoreCase(Character.toString(messageService.CMD_YES));
     }
 
     private void sayHello() {
-        ioService.println(Messages.MSG_WELCOME);
+        ioService.println(messageService.getMessage("MSG_WELCOME"));
     }
 }

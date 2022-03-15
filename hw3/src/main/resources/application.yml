@@ -1,3 +1,11 @@
+spring:
+  messages:
+    basename: i18n/messages
+
 application:
+  #locale: es-ES
+  locale: ru-RU
+  #no locale -> english
+
   resourceName: questions.csv
   scoreToPass: 3

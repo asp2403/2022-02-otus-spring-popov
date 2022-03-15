@@ -9,20 +9,22 @@ public class TestingResultPrinterImpl implements TestingResultPrinter {
 
     private final IOService ioService;
     private final AppConfig appConfig;
+    private final MessageService messageService;
 
-    public TestingResultPrinterImpl(IOService ioService, AppConfig appConfig) {
+    public TestingResultPrinterImpl(IOService ioService, AppConfig appConfig, MessageService messageService) {
         this.ioService = ioService;
         this.appConfig = appConfig;
+        this.messageService = messageService;
     }
 
     @Override
     public void print(TestingResult res) {
         var score = res.getScore();
-        ioService.printlnFormat(Messages.MSG_SCORE, res.getUser().getFullName(), score);
+        ioService.printlnFormat(messageService.getMessage("MSG_SCORE"), res.getUser().getFullName(), score);
         if (score >= appConfig.getScoreToPass()) {
-            ioService.println(Messages.MSG_SUCCESS);
+            ioService.println(messageService.getMessage("MSG_SUCCESS"));
         } else {
-            ioService.println(Messages.MSG_FAIL);
+            ioService.println(messageService.getMessage("MSG_FAIL"));
         }
     }
 }

@@ -13,20 +13,22 @@ public class TestingServiceImpl implements TestingService {
     private final IOService ioService;
     private final QuestionService questionService;
     private final QuestionConverter questionConverter;
+    private final MessageService messageService;
 
-    public TestingServiceImpl(QuestionService questionService, IOService ioService, QuestionConverter questionConverter) {
+    public TestingServiceImpl(QuestionService questionService, IOService ioService, QuestionConverter questionConverter, MessageService messageService) {
         this.questionService = questionService;
         this.ioService = ioService;
         this.questionConverter = questionConverter;
+        this.messageService = messageService;
     }
 
     private void askQuestion(Question q, TestingResult testingResult) {
         ioService.println(questionConverter.convertQuestionToString(q));
-        ioService.println(Messages.MSG_QUESTION);
+        ioService.printlnFormat(messageService.getMessage("MSG_QUESTION"), messageService.CMD_EXIT);
         do {
             try {
-                var ch = ioService.readChar(Messages.PROMPT, Messages::getIOErrorMessage);
-                if (ch == Messages.CMD_EXIT) {
+                var ch = ioService.readChar(messageService.PROMPT, messageService::getIOErrorMessage);
+                if (ch == messageService.CMD_EXIT) {
                     testingResult.setAborted(true);
                     return;
                 }
@@ -35,7 +37,7 @@ public class TestingServiceImpl implements TestingService {
                 testingResult.applyAnswer(isCorrect);
                 break;
             } catch (IndexOutOfBoundsException e) {
-                ioService.println(Messages.ERR_OUT_OF_BOUNDS);
+                ioService.println(messageService.getMessage("ERR_OUT_OF_BOUNDS"));
             }
         } while (true);
     }
