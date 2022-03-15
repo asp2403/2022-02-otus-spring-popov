@@ -13,8 +13,8 @@ public class MessageServiceImpl implements MessageService {
     private final Locale locale;
     private final MessageSource messageSource;
 
-    public MessageServiceImpl(AppConfig appConfig, MessageSource messageSource) {
-        this.locale = Locale.forLanguageTag(appConfig.getLocale());
+    public MessageServiceImpl(LocaleProvider localeProvider, MessageSource messageSource) {
+        this.locale = localeProvider.getLocale();
         this.messageSource = messageSource;
     }
 

@@ -1,11 +1,15 @@
+logging:
+  level:
+    root: WARN
+
 spring:
   messages:
     basename: i18n/messages
 
 application:
-  #locale: es-ES
   locale: ru-RU
+  #locale: es-ES
   #no locale -> english
 
-  resourceName: questions.csv
+  questionsBaseName: questions/questions
   scoreToPass: 3

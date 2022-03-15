@@ -1,26 +1,27 @@
 package ru.otus.homework.popov.dao;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.opencsv.CSVReader;
 import org.springframework.stereotype.Repository;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import com.opencsv.CSVReader;
 import ru.otus.homework.popov.exceptions.QuestionsLoadingException;
 import ru.otus.homework.popov.service.AppConfig;
+import ru.otus.homework.popov.service.LocaleProvider;
+
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 @Repository
 public class QuestionDaoImpl implements QuestionDao {
 
     private final String resourceName;
 
-    public QuestionDaoImpl(AppConfig appConfig) {
+    public QuestionDaoImpl(AppConfig appConfig, LocaleProvider localeProvider) {
 
-        this.resourceName = appConfig.getResourceName();
+        this.resourceName = getResourceName(appConfig.getQuestionsBaseName(), localeProvider.getLocale());
     }
 
     @Override
@@ -44,5 +45,17 @@ public class QuestionDaoImpl implements QuestionDao {
             throw new QuestionsLoadingException("Question loading exception!");
         }
         return list;
+    }
+
+    private String getResourceName(String baseName, Locale locale) {
+        var ext = ".csv";
+        var separator = "_";
+        var language = locale.getLanguage();
+        if (language.isEmpty()) {
+            return baseName + ext;
+        }
+        var country = locale.getCountry();
+        return baseName + separator + language + separator + country + ext;
+
     }
 }

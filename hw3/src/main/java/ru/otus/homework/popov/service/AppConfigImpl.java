@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Component
 public class AppConfigImpl implements AppConfig {
     private int scoreToPass;
-    private String resourceName = "";
+    private String questionsBaseName = "";
     private String locale = "";
 
     @Override
@@ -18,16 +18,16 @@ public class AppConfigImpl implements AppConfig {
     }
 
     @Override
-    public String getResourceName() {
-        return resourceName;
+    public String getQuestionsBaseName() {
+        return questionsBaseName;
     }
 
     public void setScoreToPass(int scoreToPass) {
         this.scoreToPass = scoreToPass;
     }
 
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
+    public void setQuestionsBaseName(String questionsBaseName) {
+        this.questionsBaseName = questionsBaseName;
     }
 
     @Override
