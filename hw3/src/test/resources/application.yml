@@ -1,0 +1,7 @@
+spring:
+  messages:
+    basename: i18n/messages
+
+application:
+  questionsBaseName: questions/test
+  scoreToPass: 3
