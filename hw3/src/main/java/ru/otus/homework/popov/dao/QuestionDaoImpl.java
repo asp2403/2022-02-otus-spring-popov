@@ -42,7 +42,7 @@ public class QuestionDaoImpl implements QuestionDao {
                 }
             }
         } catch (Exception e) {
-            throw new QuestionsLoadingException("Question loading exception!");
+            throw new QuestionsLoadingException("Question loading exception! Resource Name: " + resourceName);
         }
         return list;
     }
