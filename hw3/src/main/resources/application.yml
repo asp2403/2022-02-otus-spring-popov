@@ -5,11 +5,14 @@ logging:
 spring:
   messages:
     basename: i18n/messages
+    fallback-to-system-locale: false
 
 application:
   locale: ru-RU
+
   #locale: es-ES
   #no locale -> english
+  #locale: fr-FR       #unsupported locale -> english
 
   questionsBaseName: questions/questions
   scoreToPass: 3

@@ -4,10 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ResourceLoader;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
 import ru.otus.homework.popov.service.AppConfig;
 import ru.otus.homework.popov.service.LocaleProvider;
+import ru.otus.homework.popov.service.QuestionResourceNameProvider;
 
 import java.util.Arrays;
 
@@ -20,6 +22,12 @@ class QuestionDaoImplTest {
 
     @Autowired
     private LocaleProvider localeProvider;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    @Autowired
+    private QuestionResourceNameProvider questionResourceNameProvider;
 
     @DisplayName("должен корректно читать файл ресурсов")
     @Test
@@ -41,7 +49,7 @@ class QuestionDaoImplTest {
                         new Answer("Answer34", false)
                 ))
         );
-        var dao = new QuestionDaoImpl(appConfig, localeProvider);
+        var dao = new QuestionDaoImpl(appConfig, localeProvider, resourceLoader, questionResourceNameProvider);
         assertEquals(questions, dao.loadQuestions());
     }
 }
