@@ -1,6 +1,7 @@
 package ru.otus.homework.popov.service;
 
 import org.springframework.stereotype.Service;
+import ru.otus.homework.popov.config.UISettings;
 import ru.otus.homework.popov.domain.Question;
 import ru.otus.homework.popov.domain.TestingResult;
 import ru.otus.homework.popov.domain.User;
@@ -14,21 +15,27 @@ public class TestingServiceImpl implements TestingService {
     private final QuestionService questionService;
     private final QuestionConverter questionConverter;
     private final MessageService messageService;
+    private final UISettings uiSettings;
 
-    public TestingServiceImpl(QuestionService questionService, IOService ioService, QuestionConverter questionConverter, MessageService messageService) {
+    public TestingServiceImpl(QuestionService questionService,
+                              IOService ioService,
+                              QuestionConverter questionConverter,
+                              MessageService messageService,
+                              UISettings uiSettings) {
         this.questionService = questionService;
         this.ioService = ioService;
         this.questionConverter = questionConverter;
         this.messageService = messageService;
+        this.uiSettings = uiSettings;
     }
 
     private void askQuestion(Question q, TestingResult testingResult) {
         ioService.println(questionConverter.convertQuestionToString(q));
-        ioService.printlnFormat(messageService.getMessage("MSG_QUESTION"), messageService.CMD_EXIT);
+        ioService.printlnFormat(messageService.getMessage("MSG_QUESTION"), uiSettings.getCmdQuit());
         do {
             try {
-                var ch = ioService.readChar(messageService.PROMPT, messageService::getIOErrorMessage);
-                if (ch == messageService.CMD_EXIT) {
+                var ch = ioService.readChar(uiSettings.getPrompt(), messageService::getIOErrorMessage);
+                if (ch == uiSettings.getCmdQuit()) {
                     testingResult.setAborted(true);
                     return;
                 }

@@ -1,6 +1,7 @@
 package ru.otus.homework.popov.service;
 
 import org.springframework.stereotype.Service;
+import ru.otus.homework.popov.config.UISettings;
 import ru.otus.homework.popov.domain.User;
 
 
@@ -11,18 +12,21 @@ public class AppRunner {
     private final TestingResultPrinter testingResultPrinter;
     private final UserService userService;
     private final MessageService messageService;
+    private final UISettings uiSettings;
 
     public AppRunner(
             IOService ioService,
             TestingService testingService,
             TestingResultPrinter testingResultPrinter,
             UserService userService,
-            MessageService messageService) {
+            MessageService messageService,
+            UISettings uiSettings) {
         this.ioService = ioService;
         this.testingService = testingService;
         this.testingResultPrinter = testingResultPrinter;
         this.userService = userService;
         this.messageService = messageService;
+        this.uiSettings = uiSettings;
     }
 
     public void executeApp() {
@@ -50,9 +54,9 @@ public class AppRunner {
     }
 
     private boolean wantExit() {
-        ioService.printlnFormat(messageService.getMessage("MSG_TRY_AGAIN"), messageService.CMD_YES);
-        var s = ioService.readString(messageService.PROMPT);
-        return !s.equalsIgnoreCase(Character.toString(messageService.CMD_YES));
+        ioService.printlnFormat(messageService.getMessage("MSG_TRY_AGAIN"), uiSettings.getCmdYes());
+        var s = ioService.readString(uiSettings.getPrompt());
+        return !s.equalsIgnoreCase(Character.toString(uiSettings.getCmdYes()));
     }
 
     private void sayHello() {

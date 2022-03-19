@@ -4,10 +4,10 @@ import com.opencsv.CSVReader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
+import ru.otus.homework.popov.config.LocalizationSettings;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
 import ru.otus.homework.popov.exceptions.QuestionsLoadingException;
-import ru.otus.homework.popov.service.AppConfig;
 import ru.otus.homework.popov.service.LocaleProvider;
 import ru.otus.homework.popov.service.QuestionResourceNameProvider;
 
@@ -21,11 +21,11 @@ public class QuestionDaoImpl implements QuestionDao {
     private final Resource resource;
 
     public QuestionDaoImpl(
-            AppConfig appConfig,
+            LocalizationSettings localizationSettings,
             LocaleProvider localeProvider,
             ResourceLoader resourceLoader,
             QuestionResourceNameProvider questionResourceNameProvider) {
-        var baseName = appConfig.getQuestionsBaseName();
+        var baseName = localizationSettings.getQuestionsBaseName();
         var resourceName = questionResourceNameProvider.getResourceName(baseName, localeProvider.getLocale());
         var res = resourceLoader.getResource(resourceName);
         if (!res.exists()) {

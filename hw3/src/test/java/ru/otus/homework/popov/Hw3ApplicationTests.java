@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.otus.homework.popov.config.LocalizationSettings;
+import ru.otus.homework.popov.config.TestingSettings;
 import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.service.*;
 
@@ -13,7 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class Hw3ApplicationTests {
 
 	@Autowired
-	private AppConfig appConfig;
+	private LocalizationSettings localizationSettings;
+
+	@Autowired
+	private TestingSettings testingSettings;
 
 	@Autowired
 	private AppRunner appRunner;
@@ -52,7 +57,8 @@ class Hw3ApplicationTests {
 	@DisplayName("должен корректно загружать контекст")
 	@Test
 	void shouldCorrectLoadContext() {
-		assertThat(appConfig).isNotNull();
+		assertThat(localizationSettings).isNotNull();
+		assertThat(testingSettings).isNotNull();
 		assertThat(appRunner).isNotNull();
 		assertThat(ioProvider).isNotNull();
 		assertThat(ioService).isNotNull();

@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ResourceLoader;
+import ru.otus.homework.popov.config.LocalizationSettings;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
-import ru.otus.homework.popov.service.AppConfig;
 import ru.otus.homework.popov.service.LocaleProvider;
 import ru.otus.homework.popov.service.QuestionResourceNameProvider;
 
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class QuestionDaoImplTest {
     @Autowired
-    private AppConfig appConfig;
+    private LocalizationSettings localizationSettings;
 
     @Autowired
     private LocaleProvider localeProvider;
@@ -49,7 +49,7 @@ class QuestionDaoImplTest {
                         new Answer("Answer34", false)
                 ))
         );
-        var dao = new QuestionDaoImpl(appConfig, localeProvider, resourceLoader, questionResourceNameProvider);
+        var dao = new QuestionDaoImpl(localizationSettings, localeProvider, resourceLoader, questionResourceNameProvider);
         assertEquals(questions, dao.loadQuestions());
     }
 }

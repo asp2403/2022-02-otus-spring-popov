@@ -8,11 +8,15 @@ spring:
     fallback-to-system-locale: false
 
 application:
-  locale: ru-RU
-
-  #locale: es-ES
-  #no locale -> english
-  #locale: fr-FR       #unsupported locale -> english
-
-  questionsBaseName: questions/questions
-  scoreToPass: 3
+  testing:
+    scoreToPass: 3
+  localization:
+    #locale: ru-RU
+    locale: es-ES
+    #no locale -> english
+    #locale: fr-FR       #unsupported locale -> english
+    questions-base-name: questions/questions
+  ui:
+    cmd-quit: x
+    cmd-yes: y
+    prompt: ">"

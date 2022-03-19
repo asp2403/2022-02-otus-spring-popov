@@ -1,8 +1,6 @@
 package ru.otus.homework.popov.service;
 
-public interface AppConfig {
-    int getScoreToPass();
+public interface LocaleSettings {
     String getQuestionsBaseName();
     String getLocale();
-
 }
