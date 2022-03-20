@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.homework.popov.config.LocalizationSettings;
 import ru.otus.homework.popov.config.TestingSettings;
+import ru.otus.homework.popov.config.UISettings;
 import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.service.*;
 
@@ -13,6 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class Hw3ApplicationTests {
+
+	@Autowired
+	private UISettings uiSettings;
 
 	@Autowired
 	private LocalizationSettings localizationSettings;
@@ -24,6 +28,9 @@ class Hw3ApplicationTests {
 	private AppRunner appRunner;
 
 	@Autowired
+	private IOErrorMessageService ioErrorMessageService;
+
+	@Autowired
 	private IOProvider ioProvider;
 
 	@Autowired
@@ -33,10 +40,16 @@ class Hw3ApplicationTests {
 	private LocaleProvider localeProvider;
 
 	@Autowired
+	private MessagePrinter messagePrinter;
+
+	@Autowired
 	private MessageService messageService;
 
 	@Autowired
 	private QuestionConverter questionConverter;
+
+	@Autowired
+	private QuestionResourceNameProvider questionResourceNameProvider;
 
 	@Autowired
 	private QuestionService questionService;
@@ -54,18 +67,24 @@ class Hw3ApplicationTests {
 	private QuestionDao questionDao;
 
 
+
+
 	@DisplayName("должен корректно загружать контекст")
 	@Test
 	void shouldCorrectLoadContext() {
+		assertThat(uiSettings).isNotNull();
 		assertThat(localizationSettings).isNotNull();
 		assertThat(testingSettings).isNotNull();
 		assertThat(appRunner).isNotNull();
+		assertThat(ioErrorMessageService).isNotNull();
 		assertThat(ioProvider).isNotNull();
 		assertThat(ioService).isNotNull();
 		assertThat(localeProvider).isNotNull();
+		assertThat(messagePrinter).isNotNull();
 		assertThat(messageService).isNotNull();
 		assertThat(questionConverter).isNotNull();
 		assertThat(questionService).isNotNull();
+		assertThat(questionResourceNameProvider).isNotNull();
 		assertThat(testingResultPrinter).isNotNull();
 		assertThat(testingService).isNotNull();
 		assertThat(userService).isNotNull();

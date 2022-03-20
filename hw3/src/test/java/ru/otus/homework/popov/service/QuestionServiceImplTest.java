@@ -6,6 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.dao.QuestionDaoImpl;
 import ru.otus.homework.popov.domain.Answer;
@@ -16,13 +19,13 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class QuestionServiceImplTest {
 
-    @Mock
+    @MockBean
     private QuestionDao questionDao;
 
-    @InjectMocks
+    @Autowired
     private QuestionServiceImpl questionService;
 
 

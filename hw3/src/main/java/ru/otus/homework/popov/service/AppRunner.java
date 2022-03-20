@@ -11,7 +11,7 @@ public class AppRunner {
     private final IOService ioService;
     private final TestingResultPrinter testingResultPrinter;
     private final UserService userService;
-    private final MessageService messageService;
+    private final MessagePrinter messagePrinter;
     private final UISettings uiSettings;
 
     public AppRunner(
@@ -19,13 +19,13 @@ public class AppRunner {
             TestingService testingService,
             TestingResultPrinter testingResultPrinter,
             UserService userService,
-            MessageService messageService,
+            MessagePrinter messagePrinter,
             UISettings uiSettings) {
         this.ioService = ioService;
         this.testingService = testingService;
         this.testingResultPrinter = testingResultPrinter;
         this.userService = userService;
-        this.messageService = messageService;
+        this.messagePrinter = messagePrinter;
         this.uiSettings = uiSettings;
     }
 
@@ -50,16 +50,17 @@ public class AppRunner {
     }
 
     private void sayGoodBy() {
-        ioService.println(messageService.getMessage("MSG_GOOD_BY"));
+
+        messagePrinter.println("MSG_GOOD_BY");
     }
 
     private boolean wantExit() {
-        ioService.printlnFormat(messageService.getMessage("MSG_TRY_AGAIN"), uiSettings.getCmdYes());
+        messagePrinter.printlnFormat("MSG_TRY_AGAIN", uiSettings.getCmdYes());
         var s = ioService.readString(uiSettings.getPrompt());
         return !s.equalsIgnoreCase(Character.toString(uiSettings.getCmdYes()));
     }
 
     private void sayHello() {
-        ioService.println(messageService.getMessage("MSG_WELCOME"));
+        messagePrinter.println("MSG_WELCOME");
     }
 }

@@ -10,17 +10,17 @@ import java.util.Locale;
 @Service
 public class MessageServiceImpl implements MessageService {
 
-    private final Locale locale;
+    private final LocaleProvider localeProvider;
     private final MessageSource messageSource;
 
     public MessageServiceImpl(LocaleProvider localeProvider, MessageSource messageSource) {
-        this.locale = localeProvider.getLocale();
+        this.localeProvider = localeProvider;
         this.messageSource = messageSource;
     }
 
     @Override
     public String getMessage(String id) {
-        return messageSource.getMessage(id, null, locale);
+        return messageSource.getMessage(id, null, localeProvider.getLocale());
     }
 
     @Override
@@ -28,15 +28,4 @@ public class MessageServiceImpl implements MessageService {
         return String.format(getMessage(id), args);
     }
 
-    @Override
-    public String getIOErrorMessage(int errorCode) {
-        switch (errorCode) {
-            case IOService.ERR_BLANK_STRING:
-                return getMessage("ERR_EMPTY_STRING");
-            case IOService.ERR_CHAR_EXPECTED:
-                return getMessage("ERR_ONE_CHAR_EXPECTED");
-            default:
-                return getMessage("ERR_UNKNOWN");
-        }
-    }
 }

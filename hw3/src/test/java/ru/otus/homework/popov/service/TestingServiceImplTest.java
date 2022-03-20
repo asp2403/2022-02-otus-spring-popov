@@ -7,6 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.otus.homework.popov.config.UISettings;
 import ru.otus.homework.popov.dao.QuestionDao;
 import ru.otus.homework.popov.domain.Answer;
 import ru.otus.homework.popov.domain.Question;
@@ -23,22 +27,25 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class TestingServiceImplTest {
 
-    @Mock
+    @MockBean
     private QuestionService questionService;
 
-    @Mock
+    @MockBean
     private IOService ioService;
 
-    @Mock
+    @MockBean
     private QuestionConverter questionConverter;
 
-    @Mock
+    @MockBean
     private MessageService messageService;
 
-    @InjectMocks
+    @MockBean
+    private UISettings uiSettings;
+
+    @Autowired
     private TestingServiceImpl testingService;
 
     private List<Question> questions;
@@ -52,6 +59,7 @@ class TestingServiceImplTest {
         given(questionService.loadQuestions()).willReturn(questions);
         given(questionConverter.convertQuestionToString(any())).willReturn("");
         given(ioService.readChar(any(), any())).willReturn('a');
+        given(uiSettings.getCmdQuit()).willReturn('q');
         var user = new User("Vasya", "Pupkin");
         var testingResult = testingService.testUser(user);
         verify(ioService, times(2)).readChar(any(), any());

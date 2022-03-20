@@ -6,6 +6,4 @@ public interface MessageService {
 
     String getMessageFormat(String id, Object... args);
 
-    String getIOErrorMessage(int errorCode);
-
 }

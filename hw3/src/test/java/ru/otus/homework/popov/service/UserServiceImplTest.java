@@ -9,7 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.homework.popov.config.TestingSettings;
+import ru.otus.homework.popov.config.UISettings;
 import ru.otus.homework.popov.domain.User;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,19 +21,22 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class UserServiceImplTest {
 
-    @Mock
+    @MockBean
     private IOService ioService;
 
-    @Mock
+    @MockBean
     private TestingSettings testingSettings;
 
-    @Mock
+    @MockBean
     private MessageService messageService;
 
-    @InjectMocks
+    @MockBean
+    private UISettings uiSettings;
+
+    @Autowired
     private UserServiceImpl userService;
 
     private final String name = "Vasya";
@@ -63,6 +68,7 @@ class UserServiceImplTest {
         given(messageService.getMessageFormat(eq("MSG_ENTER_SURNAME"), any())).willReturn(msgEnterSurname);
         given(ioService.readNotEmptyString(any(), eq(msgEnterName), any())).willReturn(name);
         given(ioService.readNotEmptyString(any(), eq(msgEnterSurname), any())).willReturn("q");
+        given(uiSettings.getCmdQuit()).willReturn('q');
         var user = userService.register();
         verify(ioService, times(1)).readNotEmptyString(any(), eq(msgEnterName), any());
         verify(ioService, times(1)).readNotEmptyString(any(), eq(msgEnterSurname), any());

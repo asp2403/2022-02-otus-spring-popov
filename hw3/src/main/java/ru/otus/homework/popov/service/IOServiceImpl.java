@@ -28,11 +28,6 @@ public class IOServiceImpl implements IOService{
     }
 
     @Override
-    public void printlnFormat(String s, Object... args) {
-        println(String.format(s, args));
-    }
-
-    @Override
     public String readString(String prompt) {
         printPrompt(prompt);
         return scanner.nextLine().trim();

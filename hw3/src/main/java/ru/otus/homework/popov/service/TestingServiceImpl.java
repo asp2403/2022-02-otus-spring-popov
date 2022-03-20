@@ -14,27 +14,29 @@ public class TestingServiceImpl implements TestingService {
     private final IOService ioService;
     private final QuestionService questionService;
     private final QuestionConverter questionConverter;
-    private final MessageService messageService;
+    private final MessagePrinter messagePrinter;
     private final UISettings uiSettings;
+    private final IOErrorMessageService ioErrorMessageService;
 
     public TestingServiceImpl(QuestionService questionService,
                               IOService ioService,
                               QuestionConverter questionConverter,
-                              MessageService messageService,
-                              UISettings uiSettings) {
+                              MessagePrinter messagePrinter,
+                              UISettings uiSettings, IOErrorMessageService ioErrorMessageService) {
         this.questionService = questionService;
         this.ioService = ioService;
         this.questionConverter = questionConverter;
-        this.messageService = messageService;
+        this.messagePrinter = messagePrinter;
         this.uiSettings = uiSettings;
+        this.ioErrorMessageService = ioErrorMessageService;
     }
 
     private void askQuestion(Question q, TestingResult testingResult) {
         ioService.println(questionConverter.convertQuestionToString(q));
-        ioService.printlnFormat(messageService.getMessage("MSG_QUESTION"), uiSettings.getCmdQuit());
+        messagePrinter.printlnFormat("MSG_QUESTION", uiSettings.getCmdQuit());
         do {
             try {
-                var ch = ioService.readChar(uiSettings.getPrompt(), messageService::getIOErrorMessage);
+                var ch = ioService.readChar(uiSettings.getPrompt(), ioErrorMessageService::getIOErrorMessage);
                 if (ch == uiSettings.getCmdQuit()) {
                     testingResult.setAborted(true);
                     return;
@@ -44,7 +46,7 @@ public class TestingServiceImpl implements TestingService {
                 testingResult.applyAnswer(isCorrect);
                 break;
             } catch (IndexOutOfBoundsException e) {
-                ioService.println(messageService.getMessage("ERR_OUT_OF_BOUNDS"));
+                messagePrinter.println("ERR_OUT_OF_BOUNDS");
             }
         } while (true);
     }

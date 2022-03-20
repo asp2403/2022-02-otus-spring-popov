@@ -22,8 +22,8 @@
 
 
     application:
-    
-        locale: <значение>
+        localization:
+            locale: <значение>
 
 Реализовано три языка:
 

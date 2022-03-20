@@ -11,8 +11,6 @@ public interface IOService {
 
     void println(String s);
 
-    void printlnFormat(String s, Object... args);
-
     String readString(String prompt);
 
     String readNotEmptyString(String prompt, Function<Integer, String> getErrorMessage);

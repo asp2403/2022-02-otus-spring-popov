@@ -11,8 +11,8 @@ application:
   testing:
     scoreToPass: 3
   localization:
-    #locale: ru-RU
-    locale: es-ES
+    locale: ru-RU
+    #locale: es-ES
     #no locale -> english
     #locale: fr-FR       #unsupported locale -> english
     questions-base-name: questions/questions

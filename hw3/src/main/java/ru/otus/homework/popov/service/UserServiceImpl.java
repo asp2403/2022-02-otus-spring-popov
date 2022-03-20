@@ -11,20 +11,29 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final IOService ioService;
-    private final MessageService messageService;
+    private final MessagePrinter messagePrinter;
     private final TestingSettings testingSettings;
     private final UISettings uiSettings;
+    private final MessageService messageService;
+    private final IOErrorMessageService ioErrorMessageService;
 
-    public UserServiceImpl(IOService ioService, TestingSettings testingSettings, MessageService messageService, UISettings uiSettings) {
+    public UserServiceImpl(IOService ioService,
+                           TestingSettings testingSettings,
+                           MessagePrinter messagePrinter,
+                           UISettings uiSettings,
+                           MessageService messageService,
+                           IOErrorMessageService ioErrorMessageService) {
         this.ioService = ioService;
         this.testingSettings = testingSettings;
-        this.messageService = messageService;
+        this.messagePrinter = messagePrinter;
         this.uiSettings = uiSettings;
+        this.messageService = messageService;
+        this.ioErrorMessageService = ioErrorMessageService;
     }
 
     private Optional<String> readValue(String descriptionId) {
         var description = messageService.getMessageFormat(descriptionId, uiSettings.getCmdQuit());
-        var str = ioService.readNotEmptyString(uiSettings.getPrompt(), description, messageService::getIOErrorMessage);
+        var str = ioService.readNotEmptyString(uiSettings.getPrompt(), description, ioErrorMessageService::getIOErrorMessage);
         if(str.equalsIgnoreCase(Character.toString(uiSettings.getCmdQuit()))) {
             return Optional.empty();
         } else {
@@ -46,7 +55,7 @@ public class UserServiceImpl implements UserService {
         }
 
         var user = new User(name.get(), surname.get());
-        ioService.printlnFormat(messageService.getMessage("MSG_HELLO"), user.getFullName(), testingSettings.getScoreToPass());
+        messagePrinter.printlnFormat("MSG_HELLO", user.getFullName(), testingSettings.getScoreToPass());
         return Optional.of(user);
     }
 }
