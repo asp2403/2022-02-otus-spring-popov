@@ -18,12 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class QuestionDaoImplTest {
     @Autowired
-    private LocalizationSettings localizationSettings;
-
-    @Autowired
-    private LocaleProvider localeProvider;
-
-    @Autowired
     private ResourceLoader resourceLoader;
 
     @Autowired
@@ -49,7 +43,7 @@ class QuestionDaoImplTest {
                         new Answer("Answer34", false)
                 ))
         );
-        var dao = new QuestionDaoImpl(localizationSettings, localeProvider, resourceLoader, questionResourceNameProvider);
+        var dao = new QuestionDaoImpl(resourceLoader, questionResourceNameProvider);
         assertEquals(questions, dao.loadQuestions());
     }
 }

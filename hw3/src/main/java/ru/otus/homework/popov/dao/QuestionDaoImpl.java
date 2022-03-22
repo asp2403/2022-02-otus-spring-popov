@@ -18,22 +18,20 @@ import java.util.List;
 @Repository
 public class QuestionDaoImpl implements QuestionDao {
 
-    private final String resourceName;
+    private final QuestionResourceNameProvider questionResourceNameProvider;
     private final ResourceLoader resourceLoader;
 
     public QuestionDaoImpl(
-            LocalizationSettings localizationSettings,
-            LocaleProvider localeProvider,
             ResourceLoader resourceLoader,
             QuestionResourceNameProvider questionResourceNameProvider) {
-        var baseName = localizationSettings.getQuestionsBaseName();
-        resourceName = questionResourceNameProvider.getResourceName(baseName, localeProvider.getLocale());
+        this.questionResourceNameProvider = questionResourceNameProvider;
         this.resourceLoader = resourceLoader;
     }
 
     @Override
     public List<Question> loadQuestions() {
         var list = new ArrayList<Question>();
+        var resourceName = questionResourceNameProvider.getResourceName();
         try (CSVReader reader = new CSVReader(new InputStreamReader(resourceLoader.getResource(resourceName).getInputStream()))) {
             List<String[]> allRows = reader.readAll();
             for (var index = 0; index < allRows.size(); index ++) {
