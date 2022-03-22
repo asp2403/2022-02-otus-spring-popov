@@ -1,0 +1,10 @@
+spring:
+  messages:
+    basename: i18n/messages
+
+
+application:
+  testing:
+    scoreToPass: 3
+  localization:
+    questions-base-name: questions/test

@@ -1,0 +1,24 @@
+logging:
+  level:
+    root: WARN
+
+spring:
+  main:
+      allow-circular-references: true
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+
+application:
+  testing:
+    scoreToPass: 3
+  localization:
+    locale: ru-RU
+    #locale: es-ES
+    #no locale -> english
+    #locale: fr-FR       #unsupported locale -> english
+    questions-base-name: questions/questions
+  ui:
+    cmd-quit: x
+    cmd-yes: y
+    prompt: ">"
