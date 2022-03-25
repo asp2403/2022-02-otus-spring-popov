@@ -38,6 +38,7 @@ public class AppCommands {
         if (user.isEmpty()) {
             sayGoodBy();
         }
+
     }
 
     @ShellMethod(value = "Test User", key = {"t", "test"})
@@ -52,22 +53,12 @@ public class AppCommands {
     }
 
     private void runTest(User user) {
-        do {
-            var testingResult = testingService.testUser(user);
-            if (testingResult.isAborted()) {
-                return;
-            }
-            testingResultPrinter.print(testingResult);
-            if (wantExit()) {
-                return;
-            }
-        } while (true);
-    }
+        var testingResult = testingService.testUser(user);
+        if (testingResult.isAborted()) {
+            return;
+        }
+        testingResultPrinter.print(testingResult);
 
-    private boolean wantExit() {
-        messagePrinter.printlnFormat("MSG_TRY_AGAIN", uiSettings.getCmdYes());
-        var s = ioService.readString(uiSettings.getPrompt());
-        return !s.equalsIgnoreCase(Character.toString(uiSettings.getCmdYes()));
     }
 
     private void sayHello() {
