@@ -1,0 +1,14 @@
+spring:
+  main:
+    allow-circular-references: true
+  messages:
+    basename: i18n/messages
+  shell:
+    interactive:
+      enabled: false
+
+application:
+  testing:
+    scoreToPass: 3
+  localization:
+    questions-base-name: questions/test

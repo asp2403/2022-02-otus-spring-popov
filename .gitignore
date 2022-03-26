@@ -2,3 +2,5 @@
 */target/*
 *.mvn*
 *mvnw*
+/hw4/spring-shell.log
+*.log
