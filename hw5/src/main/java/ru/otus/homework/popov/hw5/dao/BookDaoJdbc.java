@@ -21,7 +21,7 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public List<Book> getAll() {
-        return jdbc.query("select id_book, title, id_author, id_genre from book", new BookMapper());
+        return jdbc.query("select id_book, title, id_author, id_genre from book order by id_book", new BookMapper());
     }
 
     @Override

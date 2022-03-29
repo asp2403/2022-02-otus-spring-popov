@@ -1,9 +1,9 @@
-insert into author(id_author, name) values(1, 'Лев Толстой');
-insert into author(id_author, name) values(2, 'Стивен Кинг');
-insert into author(id_author, name) values(3, 'Дж. Р.Р. Толкин');
+insert into author(id_author, name) values(1, 'Author1');
+insert into author(id_author, name) values(2, 'Author2');
+insert into author(id_author, name) values(3, 'Author3');
 
-insert into genre(id_genre, name) values(1, 'Русская классика');
-insert into genre(id_genre, name) values(2, 'Фэнтези');
-insert into genre(id_genre, name) values(3, 'Ужасы');
+insert into genre(id_genre, name) values(1, 'Genre1');
+insert into genre(id_genre, name) values(2, 'Genre2');
 
-insert into book(title, id_author, id_genre) values ('Война и мир', 1, 1);
+insert into book(title, id_author, id_genre) values ('Title1', 1, 1);
+insert into book(title, id_author, id_genre) values ('Title2', 2, 2);

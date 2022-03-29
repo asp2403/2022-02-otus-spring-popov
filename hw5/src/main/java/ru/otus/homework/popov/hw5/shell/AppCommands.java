@@ -49,44 +49,43 @@ public class AppCommands {
         return getAllBooks();
     }
 
-    @ShellMethod(value = "Get Book by Id", key = {"get-book", "gb"})
+    @ShellMethod(value = "Get Book by Id (long id)", key = {"get-book", "gb"})
     public String commandGetBookById(long id) {
         return getBook(id);
     }
 
-    @ShellMethod(value = "Insert Book", key = {"ins-book", "ib"})
+    @ShellMethod(value = "Insert Book (String title, long idAuthor, long idGenre)", key = {"ins-book", "ib"})
     public String commandInsertBook(String title, long idAuthor, long idGenre) {
         return insertBook(title, idAuthor, idGenre);
     }
-
-    @ShellMethod(value = "Update Book", key = {"upd-book", "ub"})
+    @ShellMethod(value = "Update Book (long idBook, String title, long idAuthor, long idGenre)", key = {"upd-book", "ub"})
     public String commandUpdateBook(long idBook, String title, long idAuthor, long idGenre) {
         return updateBook(idBook, title, idAuthor, idGenre);
     }
 
-    @ShellMethod(value = "Delete Book by Id", key = {"del-book", "db"})
+    @ShellMethod(value = "Delete Book by Id (long id)", key = {"del-book", "db"})
     public String commandDeleteBookById(long id) {
         return deleteBook(id);
     }
 
     private String getAllAuthors() {
-        var sb = new StringBuilder(messageService.getMessage("AUTHORS_LIST") + "\n");
+        var sb = new StringBuilder(messageService.getMessage("AUTHORS_LIST")).append(System.lineSeparator());
         var authors = authorDao.getAll();
-        authors.forEach(author -> sb.append(authorConverter.convertToString(author)).append("\n"));
+        authors.forEach(author -> sb.append(authorConverter.convertToString(author)).append(System.lineSeparator()));
         return sb.toString();
     }
 
     private String getAllGenres() {
-        var sb = new StringBuilder(messageService.getMessage("GENRES_LIST") + "\n");
+        var sb = new StringBuilder(messageService.getMessage("GENRES_LIST")).append(System.lineSeparator());
         var genres = genreDao.getAll();
-        genres.forEach(genre -> sb.append(genreConverter.convertToString(genre)).append("\n"));
+        genres.forEach(genre -> sb.append(genreConverter.convertToString(genre)).append(System.lineSeparator()));
         return sb.toString();
     }
 
     private String getAllBooks() {
-        var sb = new StringBuilder(messageService.getMessage("BOOKS_LIST") + "\n");
+        var sb = new StringBuilder(messageService.getMessage("BOOKS_LIST")).append(System.lineSeparator());
         var books = bookDao.getAll();
-        books.forEach(genre -> sb.append(bookConverter.convertToString(genre)).append("\n"));
+        books.forEach(genre -> sb.append(bookConverter.convertToString(genre)).append(System.lineSeparator()));
         return sb.toString();
     }
 
