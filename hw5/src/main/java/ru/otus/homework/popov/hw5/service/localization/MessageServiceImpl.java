@@ -1,4 +1,4 @@
-package ru.otus.homework.popov.hw5.service;
+package ru.otus.homework.popov.hw5.service.localization;
 
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;

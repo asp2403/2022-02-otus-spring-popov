@@ -4,17 +4,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.otus.homework.popov.hw5.domain.Author;
 import ru.otus.homework.popov.hw5.domain.Genre;
+import ru.otus.homework.popov.hw5.service.converter.GenreConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class GenreConverterImplTest {
 
     @Autowired
-    GenreConverter genreConverter;
+    private GenreConverter genreConverter;
 
     @Test
     @DisplayName("должен корректно конвертировать в строку")

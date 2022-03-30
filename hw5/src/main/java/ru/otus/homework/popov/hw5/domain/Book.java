@@ -5,14 +5,14 @@ import java.util.Objects;
 public class Book {
     private final long id;
     private final String title;
-    private final long idAuthor;
-    private final long idGenre;
+    private final Author author;
+    private final Genre genre;
 
-    public Book(long id, String title, long idAuthor, long idGenre) {
+    public Book(long id, String title, Author author, Genre genre) {
         this.id = id;
         this.title = title;
-        this.idAuthor = idAuthor;
-        this.idGenre = idGenre;
+        this.author = author;
+        this.genre = genre;
     }
 
     public long getId() {
@@ -23,12 +23,12 @@ public class Book {
         return title;
     }
 
-    public long getIdAuthor() {
-        return idAuthor;
+    public Author getAuthor() {
+        return author;
     }
 
-    public long getIdGenre() {
-        return idGenre;
+    public Genre getGenre() {
+        return genre;
     }
 
     @Override
@@ -36,11 +36,11 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return id == book.id && idAuthor == book.idAuthor && idGenre == book.idGenre && Objects.equals(title, book.title);
+        return id == book.id && title.equals(book.title) && author.equals(book.author) && genre.equals(book.genre);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, idAuthor, idGenre);
+        return Objects.hash(id, title, author, genre);
     }
 }

@@ -9,9 +9,9 @@ import ru.otus.homework.popov.hw5.dao.GenreDao;
 import ru.otus.homework.popov.hw5.domain.Author;
 import ru.otus.homework.popov.hw5.domain.Book;
 import ru.otus.homework.popov.hw5.domain.Genre;
+import ru.otus.homework.popov.hw5.service.converter.BookConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -20,13 +20,13 @@ import static org.mockito.BDDMockito.given;
 class BookConverterImplTest {
 
     @Autowired
-    BookConverter bookConverter;
+    private BookConverter bookConverter;
 
     @MockBean
-    AuthorDao authorDao;
+    private AuthorDao authorDao;
 
     @MockBean
-    GenreDao genreDao;
+    private GenreDao genreDao;
 
     @Test
     void convertToString() {
@@ -36,12 +36,12 @@ class BookConverterImplTest {
         final String genreName = "Genre";
         final long bookId = 3;
         final String bookTitle = "Title";
-        var book = new Book(bookId, bookTitle, authorId, genreId);
         var author = new Author(authorId, authorName);
         var genre = new Genre(genreId, genreName);
+        var book = new Book(bookId, bookTitle, author, genre);
         given(authorDao.getById(anyLong())).willReturn(author);
         given(genreDao.getById(anyLong())).willReturn(genre);
         var s = bookConverter.convertToString(book);
-        assertThat(s).contains(authorName, bookTitle, genreName);
+        assertThat(s).contains(Long.toString(bookId), authorName, bookTitle, genreName);
     }
 }

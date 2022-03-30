@@ -1,4 +1,4 @@
-package ru.otus.homework.popov.hw5.service;
+package ru.otus.homework.popov.hw5.service.converter;
 
 import org.springframework.stereotype.Component;
 import ru.otus.homework.popov.hw5.domain.Author;
