@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2002-04-03--002-genre
+      author: apopov
+      createTable:
+        tableName: genre
+        columns:
+          - column:
+              name: id_genre
+              type: bigint
+              autoIncrement: true
+              constraints:
+                nullable: false
+                primaryKey: true
+          - column:
+              name: name
+              type: varchar(255)
+              constraints:
+                nullable: false

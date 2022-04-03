@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2022-04-03--001-author-genre-book-upload
+      author: apopov
+      changes:
+        - loadUpdateData:
+            primaryKey: id_author
+            file: data/2022-04-03--001-author.csv
+            relativeToChangelogFile: true
+            separator: ;
+            quotChar: '"'
+            encoding: UTF-8
+            tableName: author
+        - loadUpdateData:
+            primaryKey: id_genre
+            file: data/2022-04-03--002-genre.csv
+            relativeToChangelogFile: true
+            separator: ;
+            quotChar: '"'
+            encoding: UTF-8
+            tableName: genre
+        - loadUpdateData:
+            primaryKey: id_book
+            file: data/2022-04-03--003-book.csv
+            relativeToChangelogFile: true
+            separator: ;
+            quotChar: '"'
+            encoding: UTF-8
+            tableName: book

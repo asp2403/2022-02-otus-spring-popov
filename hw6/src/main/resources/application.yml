@@ -1,0 +1,20 @@
+#logging:
+#  level:
+    #root: ERROR
+spring:
+  main:
+    allow-circular-references: true
+  messages:
+    fallback-to-system-locale: false
+  datasource:
+    url: jdbc:h2:mem:books
+    #show-sql: true
+  h2:
+    console:
+      enabled: true
+  liquibase:
+    enabled: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
