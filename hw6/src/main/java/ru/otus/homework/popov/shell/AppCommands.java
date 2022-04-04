@@ -38,4 +38,19 @@ public class AppCommands {
     public String insertBook(String title, long idAuthor, long idGenre) {
         return bookCommands.insertBook(title, idAuthor, idGenre);
     }
+
+    @ShellMethod(value = "Get Book by Id (long id)", key = {"get-book", "gb"})
+    public String getBookById(long id) {
+        return bookCommands.getBookById(id);
+    }
+
+    @ShellMethod(value = "Update Book (long idBook, String title, long idAuthor, long idGenre)", key = {"upd-book", "ub"})
+    public String updateBook(long idBook, String title, long idAuthor, long idGenre) {
+        return bookCommands.updateBook(idBook, title, idAuthor, idGenre);
+    }
+
+    @ShellMethod(value = "Delete Book by Id (long id)", key = {"del-book", "db"})
+    public String deleteBookById(long id) {
+        return bookCommands.deleteBook(id);
+    }
 }

@@ -1,7 +1,5 @@
 package ru.otus.homework.popov.domain;
 
-import liquibase.pro.packaged.J;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -16,11 +14,11 @@ public class Book {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "id_author")
     private Author author;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "id_genre")
     private Genre genre;
 
@@ -47,6 +45,22 @@ public class Book {
 
     public Genre getGenre() {
         return genre;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
     }
 
     @Override

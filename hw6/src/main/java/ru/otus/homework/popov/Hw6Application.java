@@ -11,7 +11,7 @@ public class Hw6Application {
 
 		SpringApplication.run(Hw6Application.class, args);
 
-//		Console.main(args);
+		//Console.main(args);
 	}
 
 }

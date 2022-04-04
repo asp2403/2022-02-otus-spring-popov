@@ -39,20 +39,44 @@ public class BookCommandsImpl implements BookCommands {
     public String insertBook(String title, long idAuthor, long idGenre) {
         var author = authorDao.getById(idAuthor);
         var genre = genreDao.getById(idGenre);
-        var book = new Book(0, title, author, genre);
-        bookDao.insert(book);
-        return messageService.getMessage("CMD_COMPLETE");
+        if (author != null && genre != null) {
+            var book = new Book(0, title, author, genre);
+            bookDao.insert(book);
+            return messageService.getMessage("CMD_COMPLETE");
+        } else {
+            return messageService.getMessage("ERR_INTEGRITY");
+        }
     }
 
     @Override
     @Transactional
     public String updateBook(long idBook, String title, long idAuthor, long idGenre) {
-        return null;
+        var author = authorDao.getById(idAuthor);
+        var genre = genreDao.getById(idGenre);
+        if (author != null && genre != null) {
+            var book = new Book(idBook, title, author, genre);
+            bookDao.update(book);
+            return messageService.getMessage("CMD_COMPLETE");
+        } else {
+            return messageService.getMessage("ERR_INTEGRITY");
+        }
     }
 
     @Override
     @Transactional
     public String deleteBook(long idBook) {
-        return null;
+        bookDao.deleteById(idBook);
+        return messageService.getMessage("CMD_COMPLETE");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getBookById(long idBook) {
+        var book = bookDao.getById(idBook);
+        if (book != null) {
+            return bookConverter.convertToString(book);
+        } else {
+            return messageService.getMessage("ERR_BOOK_NOT_FOUND");
+        }
     }
 }

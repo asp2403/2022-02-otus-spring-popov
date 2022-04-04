@@ -8,13 +8,19 @@ spring:
     fallback-to-system-locale: false
   datasource:
     url: jdbc:h2:mem:books
-    #show-sql: true
+    show-sql: true
+  sql:
+    init:
+      mode: always
+      data-locations: data.sql
+      schema-locations: schema.sql
   h2:
     console:
       enabled: true
-  liquibase:
-    enabled: true
   jpa:
     generate-ddl: false
     hibernate:
       ddl-auto: none
+  shell:
+    interactive:
+      enabled: true
