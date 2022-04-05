@@ -1,6 +1,7 @@
 package ru.otus.homework.popov.domain;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,13 +15,17 @@ public class Book {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_author")
     private Author author;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_genre")
     private Genre genre;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_book")
+    private List<Comment> comments;
 
     public Book() {}
 
@@ -63,16 +68,24 @@ public class Book {
         this.genre = genre;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return id == book.id && title.equals(book.title) && author.equals(book.author) && genre.equals(book.genre);
+        return id == book.id && title.equals(book.title) && author.equals(book.author) && genre.equals(book.genre) && Objects.equals(comments, book.comments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, author, genre);
+        return Objects.hash(id, title, author, genre, comments);
     }
 }
