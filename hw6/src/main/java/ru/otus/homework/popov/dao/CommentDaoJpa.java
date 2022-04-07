@@ -18,13 +18,6 @@ public class CommentDaoJpa implements CommentDao {
     }
 
     @Override
-    public List<Comment> getAll(Book book) {
-        var query = em.createQuery("select c from Comment c where c.id_book = :id_book", Comment.class);
-        query.setParameter("id_book", book.getId());
-        return query.getResultList();
-    }
-
-    @Override
     public Comment getById(long id) {
         return em.find(Comment.class, id);
     }

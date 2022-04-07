@@ -1,7 +1,3 @@
-drop table book if exists cascade;
-drop table author if exists cascade;
-drop table genre if exists cascade;
-
 create table author (
     id_author bigint auto_increment not null primary key,
     name varchar(255) not null

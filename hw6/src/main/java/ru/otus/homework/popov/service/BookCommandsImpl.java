@@ -30,7 +30,7 @@ public class BookCommandsImpl implements BookCommands {
     public String getAll() {
         var sb = new StringBuilder(messageService.getMessage("BOOKS_LIST")).append(System.lineSeparator());
         var books = bookDao.getAll();
-        books.forEach(genre -> sb.append(bookConverter.convertToString(genre)).append(System.lineSeparator()));
+        books.forEach(book -> sb.append(bookConverter.convertToString(book)).append(System.lineSeparator()));
         return sb.toString();
     }
 
@@ -41,7 +41,7 @@ public class BookCommandsImpl implements BookCommands {
         var genre = genreDao.getById(idGenre);
         if (author != null && genre != null) {
             var book = new Book(0, title, author, genre);
-            bookDao.insert(book);
+            bookDao.save(book);
             return messageService.getMessage("CMD_COMPLETE");
         } else {
             return messageService.getMessage("ERR_INTEGRITY");
@@ -51,11 +51,17 @@ public class BookCommandsImpl implements BookCommands {
     @Override
     @Transactional
     public String updateBook(long idBook, String title, long idAuthor, long idGenre) {
+        var book = bookDao.getById(idBook);
+        if (book == null) {
+            return messageService.getMessage("ERR_BOOK_NOT_FOUND");
+        }
         var author = authorDao.getById(idAuthor);
         var genre = genreDao.getById(idGenre);
         if (author != null && genre != null) {
-            var book = new Book(idBook, title, author, genre);
-            bookDao.update(book);
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setGenre(genre);
+            bookDao.save(book);
             return messageService.getMessage("CMD_COMPLETE");
         } else {
             return messageService.getMessage("ERR_INTEGRITY");

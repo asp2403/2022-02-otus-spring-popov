@@ -1,11 +1,17 @@
 package ru.otus.homework.popov.domain;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "book")
+@NamedEntityGraph(name = "book-entity-graph", attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")})
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +25,12 @@ public class Book {
     @JoinColumn(name = "id_author")
     private Author author;
 
+
     @ManyToOne
     @JoinColumn(name = "id_genre")
     private Genre genre;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
     @JoinColumn(name = "id_book")
     private List<Comment> comments;
 

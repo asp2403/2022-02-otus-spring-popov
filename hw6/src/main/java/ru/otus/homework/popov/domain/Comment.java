@@ -1,6 +1,7 @@
 package ru.otus.homework.popov.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "comment")
@@ -17,13 +18,13 @@ public class Comment {
     @JoinColumn(name = "id_book")
     private Book book;
 
+    public Comment() {
+    }
+
     public Comment(long id, String text, Book book) {
         this.id = id;
         this.text = text;
         this.book = book;
-    }
-
-    public Comment() {
     }
 
     public long getId() {
@@ -48,5 +49,19 @@ public class Comment {
 
     public void setBook(Book book) {
         this.book = book;
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id && Objects.equals(text, comment.text) ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text);
     }
 }

@@ -50,6 +50,7 @@ public class CommentCommandsImpl implements CommentCommands {
         if (book == null) {
             return messageService.getMessage("ERR_BOOK_NOT_FOUND");
         }
+
         var comment = new Comment(0, text, book);
         commentDao.save(comment);
         return messageService.getMessage("CMD_COMPLETE");

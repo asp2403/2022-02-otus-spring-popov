@@ -76,6 +76,7 @@ public class AppCommands {
     public String deleteComment(long idComment) {
         return commentCommands.deleteComment(idComment);
     }
+
     @ShellMethod(value = "Get Comment (long idComment)", key = {"get-comment", "gc"})
     public String getComment(long idComment) {
         return commentCommands.getComment(idComment);
