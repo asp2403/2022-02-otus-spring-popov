@@ -19,7 +19,7 @@ public class BookDaoJpa implements BookDao {
     @Override
     public List<Book> getAll() {
         var entityGraph = em.getEntityGraph("book-entity-graph");
-        var query = em.createQuery("select b from Book b left outer join fetch b.comments", Book.class);
+        var query = em.createQuery("select b from Book b", Book.class);
         query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
     }
@@ -43,6 +43,7 @@ public class BookDaoJpa implements BookDao {
 
     @Override
     public Book getById(long id) {
+
         return em.find(Book.class, id);
     }
 }

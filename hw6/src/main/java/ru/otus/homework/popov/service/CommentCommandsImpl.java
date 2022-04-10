@@ -32,13 +32,14 @@ public class CommentCommandsImpl implements CommentCommands {
         if (book == null) {
             return messageService.getMessage("ERR_BOOK_NOT_FOUND");
         }
+        var comments = book.getComments();
         var sb = new StringBuilder(messageService.getMessage("COMMENT_LIST"));
         sb.append(System.lineSeparator())
-                .append(bookConverter.convertToString((book)))
+                .append(bookConverter.convertToString(book, (long) comments.size()))
                 .append(System.lineSeparator())
                 .append("----------------------")
                 .append(System.lineSeparator());
-        var comments = book.getComments();
+
         comments.forEach(comment -> sb.append(commentConverter.convertToString(comment)).append(System.lineSeparator()));
         return sb.toString();
     }

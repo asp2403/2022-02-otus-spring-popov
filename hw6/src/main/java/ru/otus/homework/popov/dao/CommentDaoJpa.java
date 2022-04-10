@@ -38,4 +38,12 @@ public class CommentDaoJpa implements CommentDao {
         query.setParameter("id", id);
         query.executeUpdate();
     }
+
+    @Override
+    public long getCountByBook(Book book) {
+        var query = em.createQuery("select count(c) from Comment c where id_book = :id_book", Long.class);
+        query.setParameter("id_book", book.getId());
+        return query.getSingleResult();
+
+    }
 }

@@ -21,17 +21,18 @@ public class Book {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "id_author")
     private Author author;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "id_genre")
     private Genre genre;
 
-    @OneToMany
-    @JoinColumn(name = "id_book")
+    @OneToMany(mappedBy="book", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     public Book() {}

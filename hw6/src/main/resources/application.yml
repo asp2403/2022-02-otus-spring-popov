@@ -20,7 +20,7 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
-    show-sql: false
+    show-sql: true
   shell:
     interactive:
       enabled: true
