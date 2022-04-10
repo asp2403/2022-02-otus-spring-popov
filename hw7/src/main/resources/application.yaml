@@ -1,0 +1,23 @@
+logging:
+  level:
+    root: ERROR
+spring:
+  main:
+    allow-circular-references: true
+  messages:
+    fallback-to-system-locale: false
+  datasource:
+    url: jdbc:h2:mem:books
+  h2:
+    console:
+      enabled: true
+  flyway:
+    enabled: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  shell:
+    interactive:
+      enabled: true
