@@ -49,14 +49,14 @@ public class CommentCommandsImpl implements CommentCommands {
     @Override
     @Transactional
     public String addComment(long idBook, String text) {
-        try {
-            var book = bookDao.getById(idBook);
-            var comment = new Comment(0, text, book);
-            commentDao.save(comment);
-            return messageService.getMessage("CMD_COMPLETE");
-        } catch (Exception e) {
+        var book = bookDao.getById(idBook);
+        if (book == null) {
             return messageService.getMessage("ERR_BOOK_NOT_FOUND");
         }
+        var comment = new Comment(0, text, book);
+        commentDao.save(comment);
+        return messageService.getMessage("CMD_COMPLETE");
+
     }
 
     @Override
