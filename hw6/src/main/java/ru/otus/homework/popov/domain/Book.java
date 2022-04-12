@@ -22,13 +22,11 @@ public class Book {
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "id_author")
     private Author author;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "id_genre")
     private Genre genre;
 

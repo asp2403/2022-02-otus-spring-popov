@@ -6,20 +6,20 @@ import ru.otus.homework.popov.dao.AuthorDao;
 import ru.otus.homework.popov.dao.BookDao;
 import ru.otus.homework.popov.dao.GenreDao;
 import ru.otus.homework.popov.domain.Book;
-import ru.otus.homework.popov.service.converter.BookConverter;
+import ru.otus.homework.popov.service.converter.BookDtoConverter;
 import ru.otus.homework.popov.service.localization.MessageService;
 
 @Service
 public class BookCommandsImpl implements BookCommands {
     private final BookDao bookDao;
-    private final BookConverter bookConverter;
+    private final BookDtoConverter bookCommentCountDtoConverter;
     private final MessageService messageService;
     private final AuthorDao authorDao;
     private final GenreDao genreDao;
 
-    public BookCommandsImpl(BookDao bookDao, BookConverter bookConverter, MessageService messageService, AuthorDao authorDao, GenreDao genreDao) {
+    public BookCommandsImpl(BookDao bookDao, BookDtoConverter bookCommentCountDtoConverter, MessageService messageService, AuthorDao authorDao, GenreDao genreDao) {
         this.bookDao = bookDao;
-        this.bookConverter = bookConverter;
+        this.bookCommentCountDtoConverter = bookCommentCountDtoConverter;
         this.messageService = messageService;
         this.authorDao = authorDao;
         this.genreDao = genreDao;
@@ -29,8 +29,8 @@ public class BookCommandsImpl implements BookCommands {
     @Transactional(readOnly = true)
     public String getAll() {
         var sb = new StringBuilder(messageService.getMessage("BOOKS_LIST")).append(System.lineSeparator());
-        var books = bookDao.getAll();
-        books.forEach(book -> sb.append(bookConverter.convertToString(book)).append(System.lineSeparator()));
+        var booksDto = bookDao.getDtoAll();
+        booksDto.forEach(bookDto -> sb.append(bookCommentCountDtoConverter.convertToString(bookDto)).append(System.lineSeparator()));
         return sb.toString();
     }
 
@@ -66,6 +66,7 @@ public class BookCommandsImpl implements BookCommands {
         } else {
             return messageService.getMessage("ERR_INTEGRITY");
         }
+
     }
 
     @Override
@@ -78,10 +79,10 @@ public class BookCommandsImpl implements BookCommands {
     @Override
     @Transactional(readOnly = true)
     public String getBookById(long idBook) {
-        var book = bookDao.getById(idBook);
-        if (book != null) {
-            return bookConverter.convertToString(book);
-        } else {
+        try {
+            var bookDto = bookDao.getDtoById(idBook);
+            return bookCommentCountDtoConverter.convertToString(bookDto);
+        } catch (Exception e) {
             return messageService.getMessage("ERR_BOOK_NOT_FOUND");
         }
     }

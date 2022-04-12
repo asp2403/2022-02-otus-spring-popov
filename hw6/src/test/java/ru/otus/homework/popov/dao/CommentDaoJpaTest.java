@@ -43,13 +43,22 @@ class CommentDaoJpaTest {
 
     @DisplayName("должен корректно удалять комментарий")
     @Test
-    void deleteById() {
+    void shouldCorrectDeleteById() {
         var comment = em.find(Comment.class, 3L);
         assertThat(comment).isNotNull();
         commentDao.deleteById(3L);
         em.detach(comment);
         comment = em.find(Comment.class, 3L);
         assertThat(comment).isNull();
-        
+    }
+
+    @DisplayName("должен корректно выдавать количество комментариев")
+    @Test
+    void shouldCorrectGetCountByBook() {
+        final var id = 1L;
+        var book = em.find(Book.class, id);
+        var expected = book.getComments().size();
+        var actual = commentDao.getCountByBook(book);
+        assertThat(expected).isEqualTo(actual);
     }
 }

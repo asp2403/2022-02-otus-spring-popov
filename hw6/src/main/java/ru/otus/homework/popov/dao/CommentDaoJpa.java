@@ -46,4 +46,5 @@ public class CommentDaoJpa implements CommentDao {
         return query.getSingleResult();
 
     }
+
 }

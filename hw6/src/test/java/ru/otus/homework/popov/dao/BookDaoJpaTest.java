@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Import;
 import ru.otus.homework.popov.domain.Author;
 import ru.otus.homework.popov.domain.Book;
 import ru.otus.homework.popov.domain.Genre;
-
-import java.util.Arrays;
+import ru.otus.homework.popov.dto.BookDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -73,5 +73,44 @@ class BookDaoJpaTest {
         var expected = em.find(Book.class, 2L);
         var actual = bookDao.getById(2);
         assertEquals(expected, actual);
+    }
+
+    @DisplayName("должен корректно создавать DTO всех книг")
+    @Test
+    void shouldCorrectGetDtoAll() {
+        var query = em.getEntityManager().createQuery("select new ru.otus.homework.popov.dto.BookDto(b.id, b.title, a.name, g.name, count(c)) " +
+                "from Book b " +
+                "left join b.author a " +
+                "left join b.genre g " +
+                "left join b.comments c " +
+                "group by b.id order by b.id", BookDto.class);
+        var expected = query.getResultList();
+        var actual = bookDao.getDtoAll();
+        assertThat(expected).usingRecursiveComparison().isEqualTo(actual);
+    }
+
+    @DisplayName("должен корректно выдавать DTO книги")
+    @Test
+    void shouldCorrectGetDtoById() {
+        final var id = 1L;
+        var query = em.getEntityManager().createQuery("select new ru.otus.homework.popov.dto.BookDto(b.id, b.title, a.name, g.name, count(c)) " +
+                "from Book b " +
+                "left join b.author a " +
+                "left join b.genre g " +
+                "left join b.comments c " +
+                "where b.id = :id_book group by b.id", BookDto.class);
+        query.setParameter("id_book", id);
+        var expected = query.getSingleResult();
+        var actual = bookDao.getDtoById(id);
+        assertThat(expected).usingRecursiveComparison().isEqualTo(actual);
+    }
+
+    @DisplayName("должен корректно выдавать книгу по ИД с деталями")
+    @Test
+    void getWithDetailsById() {
+        final var id = 1L;
+        var expectedBook = em.find(Book.class, id);
+        var actualBook = bookDao.getWithDetailsById(id);
+        assertThat(expectedBook).usingRecursiveComparison().isEqualTo(actualBook);
     }
 }

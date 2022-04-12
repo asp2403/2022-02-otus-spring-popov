@@ -5,7 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework.popov.dao.BookDao;
 import ru.otus.homework.popov.dao.CommentDao;
 import ru.otus.homework.popov.domain.Comment;
-import ru.otus.homework.popov.service.converter.BookConverter;
+import ru.otus.homework.popov.dto.BookDto;
+import ru.otus.homework.popov.service.converter.BookDtoConverter;
 import ru.otus.homework.popov.service.converter.CommentConverter;
 import ru.otus.homework.popov.service.localization.MessageService;
 
@@ -14,47 +15,48 @@ public class CommentCommandsImpl implements CommentCommands {
     private final CommentDao commentDao;
     private final BookDao bookDao;
     private final CommentConverter commentConverter;
-    private final BookConverter bookConverter;
+    private final BookDtoConverter bookDtoConverter;
     private final MessageService messageService;
 
-    public CommentCommandsImpl(CommentDao commentDao, BookDao bookDao, CommentConverter commentConverter, BookConverter bookConverter, MessageService messageService) {
+    public CommentCommandsImpl(CommentDao commentDao, BookDao bookDao, CommentConverter commentConverter, BookDtoConverter bookDtoConverter, MessageService messageService) {
         this.commentDao = commentDao;
         this.bookDao = bookDao;
         this.commentConverter = commentConverter;
-        this.bookConverter = bookConverter;
+        this.bookDtoConverter = bookDtoConverter;
         this.messageService = messageService;
     }
 
     @Override
     @Transactional(readOnly = true)
     public String getComments(long idBook) {
-        var book = bookDao.getById(idBook);
-        if (book == null) {
+        try {
+            var book = bookDao.getWithDetailsById(idBook);
+            var comments = book.getComments();
+            var bookDto = new BookDto(book, comments.size());
+            var sb = new StringBuilder(messageService.getMessage("COMMENT_LIST"));
+            sb.append(System.lineSeparator())
+                    .append(bookDtoConverter.convertToString(bookDto))
+                    .append(System.lineSeparator())
+                    .append("----------------------")
+                    .append(System.lineSeparator());
+            comments.forEach(comment -> sb.append(commentConverter.convertToString(comment)).append(System.lineSeparator()));
+            return sb.toString();
+        } catch (Exception e) {
             return messageService.getMessage("ERR_BOOK_NOT_FOUND");
         }
-        var comments = book.getComments();
-        var sb = new StringBuilder(messageService.getMessage("COMMENT_LIST"));
-        sb.append(System.lineSeparator())
-                .append(bookConverter.convertToString(book, (long) comments.size()))
-                .append(System.lineSeparator())
-                .append("----------------------")
-                .append(System.lineSeparator());
-
-        comments.forEach(comment -> sb.append(commentConverter.convertToString(comment)).append(System.lineSeparator()));
-        return sb.toString();
     }
 
     @Override
     @Transactional
     public String addComment(long idBook, String text) {
-        var book = bookDao.getById(idBook);
-        if (book == null) {
+        try {
+            var book = bookDao.getById(idBook);
+            var comment = new Comment(0, text, book);
+            commentDao.save(comment);
+            return messageService.getMessage("CMD_COMPLETE");
+        } catch (Exception e) {
             return messageService.getMessage("ERR_BOOK_NOT_FOUND");
         }
-
-        var comment = new Comment(0, text, book);
-        commentDao.save(comment);
-        return messageService.getMessage("CMD_COMPLETE");
     }
 
     @Override
@@ -64,13 +66,14 @@ public class CommentCommandsImpl implements CommentCommands {
         if (comment == null) {
             return messageService.getMessage("ERR_COMMENT_NOT_FOUND");
         }
-        var book = comment.getBook();
-        if (book == null) {
+        try {
+            var bookDto = bookDao.getDtoById(comment.getBook().getId());
+            return new StringBuilder().append(bookDtoConverter.convertToString(bookDto))
+                    .append(System.lineSeparator())
+                    .append(commentConverter.convertToString(comment)).toString();
+        } catch (Exception e) {
             return messageService.getMessage("ERR_BOOK_NOT_FOUND");
         }
-        return new StringBuilder().append(bookConverter.convertToString(book))
-                .append(System.lineSeparator())
-                .append(commentConverter.convertToString(comment)).toString();
     }
 
     @Override
