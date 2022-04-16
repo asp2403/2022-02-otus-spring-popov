@@ -6,18 +6,20 @@ spring:
     allow-circular-references: true
   messages:
     fallback-to-system-locale: false
-  shell:
-    interactive:
-      enabled: false
   datasource:
     url: jdbc:h2:mem:books
   sql:
     init:
       mode: always
       data-locations: data.sql
-      schema-locations: schema.sql
-    h2:
-      console:
-        path: /h2-console
-        settings:
-          web-allow-others: true
+  h2:
+    console:
+      enabled: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  shell:
+    interactive:
+      enabled: false
