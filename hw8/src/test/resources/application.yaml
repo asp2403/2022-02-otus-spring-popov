@@ -1,0 +1,22 @@
+logging:
+  level:
+    root: ERROR
+spring:
+  mongodb:
+    embedded:
+      version: 3.5.5
+  data:
+    mongodb:
+      port: 0
+      database: books_test
+  main:
+    allow-circular-references: true
+  messages:
+    fallback-to-system-locale: false
+  shell:
+    interactive:
+      enabled: false
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.homework.popov.mongock.changelog
