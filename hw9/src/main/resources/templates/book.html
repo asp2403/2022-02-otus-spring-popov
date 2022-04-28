@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${title}">Title</title>
+    <link href="../bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div th:insert="~{header :: nav}"></div>
+    <h2 th:text="${title}">
+        книга
+    </h2>
+    <form action="edit-book.html" th:action="@{/edit-book(id=${book.id})}" th:method="post" th:object="${book}">
+        <div class="row">
+            <div class="col">
+                <label for="author" class="form-label">Автор</label>
+                <select class="form-select" id="author" th:field="*{author.id}">
+                    <option th:each="author : ${authors}"
+                                th:value="${author.id}"
+                                th:text="${author.name}"
+                    >
+                    А.С. Пушкин
+                    </option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="genre" class="form-label">Жанр</label>
+                <select class="form-select" id="genre" th:field="*{genre.id}">
+                    <option th:each="genre : ${genres}"
+                            th:value="${genre.id}"
+                            th:text="${genre.name}"
+                    >
+                        Русская классика
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row>">
+
+                <label for="title" class="form-label">Название</label>
+                <input class="form-control" id="title" value="Капитанская дочка" th:value="*{title}" />
+
+        </div>
+
+        <hr>
+        <button type="submit" class="btn btn-outline-primary">OK</button>
+        <a type="button" class="btn btn-outline-secondary" href="/">Назад</a>
+
+    </form>
+</div>
+</body>
+</html>
