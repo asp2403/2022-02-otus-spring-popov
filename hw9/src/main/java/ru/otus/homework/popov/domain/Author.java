@@ -16,6 +16,8 @@ public class Author {
         this.name = name;
     }
 
+    public Author() {}
+
     public String getId() {
         return id;
     }

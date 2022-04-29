@@ -3,27 +3,14 @@ package ru.otus.homework.popov.dto;
 import ru.otus.homework.popov.domain.Book;
 
 public class BookDto {
+
     private String id;
+
     private String title;
-    private String authorName;
-    private String genreName;
-    private int commentCount;
+    private AuthorDto author;
+    private GenreDto genre;
 
-    public BookDto(String id, String title, String authorName, String genreName, int commentCount) {
-        this.id = id;
-        this.title = title;
-        this.authorName = authorName;
-        this.genreName = genreName;
-        this.commentCount = commentCount;
-    }
-
-    public BookDto fromDomainObject(Book book) {
-        return new BookDto(book.getId(), book.getTitle(), book.getAuthor().getName(), book.getGenre().getName(), book.getCommentCount());
-    }
-
-//    public Book toDomainObject(BookDto bookDto) {
-//        var author =
-//    }
+    public BookDto() {}
 
     public String getId() {
         return id;
@@ -41,27 +28,19 @@ public class BookDto {
         this.title = title;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public AuthorDto getAuthor() {
+        return author;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setAuthor(AuthorDto author) {
+        this.author = author;
     }
 
-    public String getGenreName() {
-        return genreName;
+    public GenreDto getGenre() {
+        return genre;
     }
 
-    public void setGenreName(String genreName) {
-        this.genreName = genreName;
-    }
-
-    public int getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setGenre(GenreDto genre) {
+        this.genre = genre;
     }
 }
