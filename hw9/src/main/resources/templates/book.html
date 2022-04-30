@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title th:text="${title}">Title</title>
-    <link href="../bootstrap.min.css" rel="stylesheet"/>
+    <link href="../static/bootstrap.min.css" th:href="@{bootstrap.min.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
@@ -11,7 +11,7 @@
     <h2 th:text="${title}">
         книга
     </h2>
-    <form action="edit-book.html" th:action="@{/save-book(id=${book.id})}" th:method="post" th:object="${book}">
+    <form action="index.html" th:action="@{/save-book(id=${book.id})}" th:method="post" th:object="${book}">
         <div class="row">
             <div class="col">
                 <label for="author" class="form-label">Автор</label>
@@ -57,7 +57,7 @@
 
         <hr>
         <button type="submit" class="btn btn-outline-primary">OK</button>
-        <a type="button" class="btn btn-outline-secondary" href="/">Назад</a>
+        <a type="button" class="btn btn-outline-secondary" href="index.html" th:href="@{/}">Назад</a>
 
     </form>
 </div>
