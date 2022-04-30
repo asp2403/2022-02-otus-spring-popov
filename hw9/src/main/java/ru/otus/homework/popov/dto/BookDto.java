@@ -2,15 +2,30 @@ package ru.otus.homework.popov.dto;
 
 import ru.otus.homework.popov.domain.Book;
 
+import javax.validation.constraints.NotBlank;
+
+
+
+
 public class BookDto {
 
     private String id;
 
+    @NotBlank(message="Название не должно быть пустым")
     private String title;
     private AuthorDto author;
     private GenreDto genre;
 
     public BookDto() {}
+
+    public static BookDto fromDomainObject(Book book) {
+        var dto = new BookDto();
+        dto.setId(book.getId());
+        dto.setTitle(book.getTitle());
+        dto.setAuthor(AuthorDto.fromDomainObject(book.getAuthor()));
+        dto.setGenre(GenreDto.fromDomainObject(book.getGenre()));
+        return dto;
+    }
 
     public String getId() {
         return id;

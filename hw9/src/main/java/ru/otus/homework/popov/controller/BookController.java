@@ -2,7 +2,10 @@ package ru.otus.homework.popov.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.homework.popov.domain.Book;
@@ -12,6 +15,8 @@ import ru.otus.homework.popov.service.AuthorOperations;
 import ru.otus.homework.popov.service.BookOperations;
 import ru.otus.homework.popov.service.CommentOperations;
 import ru.otus.homework.popov.service.GenreOperations;
+
+import javax.validation.Valid;
 
 @Controller
 public class BookController {
@@ -42,29 +47,42 @@ public class BookController {
         var book = new Book();
         var authors = authorOperations.findAll();
         var genres = genreOperations.findAll();
-        model.addAttribute("title", "Добавить книгу");
         model.addAttribute("book", book);
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
+        model.addAttribute("mode", "add");
         return "book";
     }
 
     @GetMapping("/edit-book")
     public String editBook(@RequestParam("id") String id, Model model) {
         var book = bookOperations.findById(id).orElseThrow(NotFoundException::new);
+        var bookDto = BookDto.fromDomainObject(book);
         var authors = authorOperations.findAll();
         var genres = genreOperations.findAll();
         var comments = commentOperations.findByBookId(id);
-        model.addAttribute("title", "Редактировать книгу");
-        model.addAttribute("book", book);
+        model.addAttribute("book", bookDto);
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
         model.addAttribute("comments", comments);
+        model.addAttribute("mode", "edit");
         return "book";
     }
 
+    @Validated
     @PostMapping("/save-book")
-    public String saveBook(BookDto bookDto) {
+    public String saveBook(@RequestParam("id") String id, @RequestParam("mode") String mode, @Valid @ModelAttribute("book") BookDto bookDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            var authors = authorOperations.findAll();
+            var genres = genreOperations.findAll();
+            var comments = commentOperations.findByBookId(bookDto.getId());
+            model.addAttribute("authors", authors);
+            model.addAttribute("genres", genres);
+            model.addAttribute("comments", comments);
+            model.addAttribute("mode", mode);
+            return "book";
+
+        }
         bookOperations.save(bookDto);
         return "redirect:/";
     }
