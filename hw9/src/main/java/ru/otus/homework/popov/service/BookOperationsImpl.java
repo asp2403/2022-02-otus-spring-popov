@@ -7,6 +7,7 @@ import ru.otus.homework.popov.dto.BookDto;
 import ru.otus.homework.popov.exception.NotFoundException;
 import ru.otus.homework.popov.repository.AuthorRepository;
 import ru.otus.homework.popov.repository.BookRepository;
+import ru.otus.homework.popov.repository.CommentRepository;
 import ru.otus.homework.popov.repository.GenreRepository;
 
 import java.util.List;
@@ -17,11 +18,13 @@ public class BookOperationsImpl implements BookOperations {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+    private final CommentRepository commentRepository;
 
-    public BookOperationsImpl(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository) {
+    public BookOperationsImpl(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository, CommentRepository commentRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.genreRepository = genreRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class BookOperationsImpl implements BookOperations {
     @Transactional
     public void save(BookDto bookDto) {
         Book book;
-        if (bookDto.getId().isEmpty()) {
+        if (bookDto.getId() == null || bookDto.getId().isEmpty()) {
             book = new Book();
         } else {
             book = bookRepository.findById(bookDto.getId()).orElseThrow(NotFoundException::new);
@@ -57,5 +60,6 @@ public class BookOperationsImpl implements BookOperations {
     @Transactional
     public void delete(String id) {
         bookRepository.deleteById(id);
+        commentRepository.deleteByBookId(id);
     }
 }

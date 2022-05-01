@@ -13,8 +13,46 @@ public class BookDto {
 
     @NotBlank(message="Название не должно быть пустым")
     private String title;
-    private AuthorDto author;
-    private GenreDto genre;
+    private Author author;
+    private Genre genre;
+
+    public static class Author {
+        private String id;
+
+        public Author(String id) {
+            this.id = id;
+        }
+
+        public Author() {
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
+    public static class Genre {
+        private String id;
+
+        public Genre(String id) {
+            this.id = id;
+        }
+
+        public Genre() {
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
 
     public BookDto() {}
 
@@ -22,8 +60,8 @@ public class BookDto {
         var dto = new BookDto();
         dto.setId(book.getId());
         dto.setTitle(book.getTitle());
-        dto.setAuthor(AuthorDto.fromDomainObject(book.getAuthor()));
-        dto.setGenre(GenreDto.fromDomainObject(book.getGenre()));
+        dto.setAuthor(new Author(book.getAuthor().getId()));
+        dto.setGenre(new Genre(book.getGenre().getId()));
         return dto;
     }
 
@@ -43,19 +81,19 @@ public class BookDto {
         this.title = title;
     }
 
-    public AuthorDto getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(AuthorDto author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
-    public GenreDto getGenre() {
+    public Genre getGenre() {
         return genre;
     }
 
-    public void setGenre(GenreDto genre) {
+    public void setGenre(Genre genre) {
         this.genre = genre;
     }
 }
