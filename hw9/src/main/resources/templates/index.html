@@ -33,8 +33,9 @@
             <td th:text="${book.genre.name}">Русская классика</td>
             <td th:text="${book.commentCount}">100</td>
             <td>
+                <a th:href="@{/book-details(id=${book.id})}" href="book-details.html"><img src="../static/eye.svg" th:src="@{eye.svg}" title="Информация"/></a>
                 <a th:href="@{/edit-book(id=${book.id})}" href="book.html"><img src="../static/pencil.svg" th:src="@{pencil.svg}" title="Изменить"/></a>
-                <a th:href="@{/del-book(id=${book.id})}" onclick="return confirm('Вы действительно хотите удалить книгу?)')"><img src="../static/trash.svg" th:src="@{trash.svg}" title="Удалить"></a>
+                <a th:href="@{/del-book(id=${book.id})}"><img src="../static/trash.svg" th:src="@{trash.svg}" title="Удалить"></a>
             </td>
         </tr>
 

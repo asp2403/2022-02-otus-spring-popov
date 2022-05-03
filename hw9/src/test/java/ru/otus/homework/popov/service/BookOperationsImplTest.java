@@ -106,4 +106,12 @@ class BookOperationsImplTest {
         assertThat(comments.size()).isEqualTo(0);
     }
 
+    @DisplayName("должен корректно возвращать название книги")
+    @Test
+    void shouldCorrectReturnTitle() {
+        var expected = "Title";
+        var actual = bookOperations.findTitleById("1");
+        assertThat(actual).isEqualTo(expected);
+    }
+
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Информация о книге</title>
+    <link href="../static/bootstrap.min.css" th:href="@{bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div th:insert="~{header :: nav}"></div>
+    <h2>
+        Информация о книге
+    </h2>
+
+        <div class="row">
+            <p th:text="${book.author.name}" ></p>
+            <p th:text="${book.genre.name}"></p>
+            <p th:text="${book.title}"></p>
+
+        </div>
+        <div class="row">
+            <div class="col">
+                <h4>
+                    Комментарии
+                </h4>
+                <ul>
+                    <li th:each="comment : ${comments}" th:text="${comment.text}">
+                        Комментарий
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <hr>
+
+        <a type="button" class="btn btn-outline-secondary" href="index.html" th:href="@{/}">Назад</a>
+
+
+</div>
+</body>
+</html>

@@ -11,7 +11,8 @@
     <h2 th:text="${mode == 'add'} ? 'Добавить книгу' : 'Редактировать книгу'">
         книга
     </h2>
-    <form action="index.html" th:action="@{/save-book(id=${book.id},mode=${mode})}" th:method="post" th:object="${book}">
+    <form action="index.html" th:action="@{/save-book(mode=${mode})}" th:method="post" th:object="${book}">
+        <input type="hidden" name="id" th:value="${book.id}"/>
         <div class="row">
             <div class="col">
                 <label for="author" class="form-label">Автор</label>
@@ -41,18 +42,6 @@
                 <label for="title" class="form-label">Название</label>
                 <input class="form-control" id="title" value="Капитанская дочка" th:field="*{title}" />
                 <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Wrong person name error</div>
-        </div>
-        <div class="row">
-            <div class="col">
-            <h4>
-                Комментарии
-            </h4>
-            <ul>
-                <li th:each="comment : ${comments}" th:text="${comment.text}">
-                    Комментарий
-                </li>
-            </ul>
-            </div>
         </div>
 
         <hr>

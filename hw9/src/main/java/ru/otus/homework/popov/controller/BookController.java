@@ -60,18 +60,25 @@ public class BookController {
         var bookDto = BookDto.fromDomainObject(book);
         var authors = authorOperations.findAll();
         var genres = genreOperations.findAll();
-        var comments = commentOperations.findByBookId(id);
         model.addAttribute("book", bookDto);
         model.addAttribute("authors", authors);
         model.addAttribute("genres", genres);
-        model.addAttribute("comments", comments);
         model.addAttribute("mode", "edit");
         return "book";
     }
 
+    @GetMapping("/book-details")
+    public String showBookDetails(@RequestParam("id") String id, Model model) {
+        var book = bookOperations.findById(id).orElseThrow(NotFoundException::new);
+        var comments = commentOperations.findByBookId(id);
+        model.addAttribute("book", book);
+        model.addAttribute("comments", comments);
+        return "book-details";
+    }
+
     @Validated
     @PostMapping("/save-book")
-    public String saveBook(@RequestParam("id") String id, @RequestParam("mode") String mode, @Valid @ModelAttribute("book") BookDto bookDto, BindingResult bindingResult, Model model) {
+    public String saveBook(@RequestParam("mode") String mode, @Valid @ModelAttribute("book") BookDto bookDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             var authors = authorOperations.findAll();
             var genres = genreOperations.findAll();
@@ -88,6 +95,15 @@ public class BookController {
     }
 
     @GetMapping("/del-book")
+    public String delBookConfirm(@RequestParam("id") String id, Model model) {
+        var bookTitle = bookOperations.findTitleById(id);
+        model.addAttribute("bookTitle", bookTitle);
+        model.addAttribute("id", id);
+        return "del-book-confirm";
+    }
+
+
+    @PostMapping("/del-book")
     public String delBook(@RequestParam("id") String id) {
         bookOperations.delete(id);
         return "redirect:/";

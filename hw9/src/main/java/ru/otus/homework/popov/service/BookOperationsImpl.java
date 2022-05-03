@@ -62,4 +62,10 @@ public class BookOperationsImpl implements BookOperations {
         bookRepository.deleteById(id);
         commentRepository.deleteByBookId(id);
     }
+
+    @Override
+    public String findTitleById(String id) {
+        var book = bookRepository.findTitle(id).orElseThrow(NotFoundException::new);
+        return book.getTitle();
+    }
 }

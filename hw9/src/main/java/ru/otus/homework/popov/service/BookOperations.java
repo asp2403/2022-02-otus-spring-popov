@@ -11,4 +11,5 @@ public interface BookOperations {
     Optional<Book> findById(String id);
     void save(BookDto bookDto);
     void delete(String id);
+    String findTitleById(String id);
 }
