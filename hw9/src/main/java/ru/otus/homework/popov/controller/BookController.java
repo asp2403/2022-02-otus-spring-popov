@@ -82,10 +82,8 @@ public class BookController {
         if (bindingResult.hasErrors()) {
             var authors = authorOperations.findAll();
             var genres = genreOperations.findAll();
-            var comments = commentOperations.findByBookId(bookDto.getId());
             model.addAttribute("authors", authors);
             model.addAttribute("genres", genres);
-            model.addAttribute("comments", comments);
             model.addAttribute("mode", mode);
             return "book";
 
