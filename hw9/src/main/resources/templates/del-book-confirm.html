@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${title}"></title>
+    <link href="../static/bootstrap.min.css" th:href="@{bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div th:insert="~{header :: nav}"></div>
+    <div class="row">
+    <h2>
+        Подтверждение
+    </h2>
+    </div>
+    <div class="row">
+        <p th:text="'Вы действительно хотите удалить книгу &quot;' + ${bookTitle} + '&quot;?'">
+            Вы действительно хотите удалить книгу?
+        </p>
+    </div>
+    <hr>
+    <form action="index.html" th:action="@{/del-book(id=${id})}" th:method="post">
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-outline-danger"><img src="/static/trash-red.svg" th:src="trash-red.svg" />Удалить</button>
+                <a type="button" class="btn btn-outline-secondary" href="index.html" th:href="@{/}">Отмена</a>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
