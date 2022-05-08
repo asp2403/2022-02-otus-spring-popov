@@ -9,6 +9,7 @@ import java.util.Objects;
 public class Book {
     @Id
     private String id;
+
     private String title;
     private Author author;
     private Genre genre;

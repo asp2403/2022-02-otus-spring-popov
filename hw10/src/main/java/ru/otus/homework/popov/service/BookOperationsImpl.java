@@ -3,6 +3,7 @@ package ru.otus.homework.popov.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework.popov.domain.Book;
+import ru.otus.homework.popov.exception.BadRequestException;
 import ru.otus.homework.popov.exception.NotFoundException;
 import ru.otus.homework.popov.repository.AuthorRepository;
 import ru.otus.homework.popov.repository.BookRepository;
@@ -36,6 +37,24 @@ public class BookOperationsImpl implements BookOperations {
     @Transactional(readOnly = true)
     public Optional<Book> findById(String id) {
         return bookRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public void updateBook(Book book) {
+        var oldBook = bookRepository.findById(book.getId()).orElseThrow(NotFoundException::new);
+        oldBook.setTitle(book.getTitle());
+        oldBook.setAuthor(book.getAuthor());
+        oldBook.setGenre(book.getGenre());
+        bookRepository.save(oldBook);
+    }
+
+    @Override
+    public void createBook(Book book) {
+        if (book.getId() != null) {
+            throw new BadRequestException();
+        }
+        bookRepository.save(book);
     }
 
     @Override

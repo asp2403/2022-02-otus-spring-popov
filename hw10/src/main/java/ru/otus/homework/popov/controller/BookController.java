@@ -1,8 +1,8 @@
 package ru.otus.homework.popov.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.otus.homework.popov.controller.dto.CommentDto;
 import ru.otus.homework.popov.domain.Book;
 import ru.otus.homework.popov.exception.NotFoundException;
@@ -29,7 +29,12 @@ public class BookController {
 
     @GetMapping("/books/{id}")
     public Book getBook(@PathVariable String id) {
-        var book = bookOperations.findById(id).orElseThrow(NotFoundException::new);
+        Book book;
+        try {
+            book = bookOperations.findById(id).orElseThrow(NotFoundException::new);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return book;
     }
 
@@ -38,5 +43,19 @@ public class BookController {
         var comments = commentOperations.findByBookId(bookId);
         var commentDtos = comments.stream().map(CommentDto::fromDomainObject).collect(Collectors.toList());
         return commentDtos;
+    }
+
+    @PutMapping("/books")
+    public void updateBook(@RequestBody Book book) {
+        try {
+            bookOperations.updateBook(book);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/books")
+    public void createBook(@RequestBody Book book) {
+
     }
 }
