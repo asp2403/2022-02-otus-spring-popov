@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.otus.homework.popov.controller.dto.CommentDto;
 import ru.otus.homework.popov.domain.Book;
+import ru.otus.homework.popov.exception.BadRequestException;
 import ru.otus.homework.popov.exception.NotFoundException;
 import ru.otus.homework.popov.service.BookOperations;
 import ru.otus.homework.popov.service.CommentOperations;
@@ -56,6 +57,10 @@ public class BookController {
 
     @PostMapping("/books")
     public void createBook(@RequestBody Book book) {
-
+        try {
+            bookOperations.createBook(book);
+        } catch (BadRequestException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 }
