@@ -50,11 +50,11 @@ public class BookOperationsImpl implements BookOperations {
     }
 
     @Override
-    public void createBook(Book book) {
+    public Book createBook(Book book) {
         if (book.getId() != null) {
             throw new BadRequestException();
         }
-        bookRepository.save(book);
+        return bookRepository.save(book);
     }
 
     @Override

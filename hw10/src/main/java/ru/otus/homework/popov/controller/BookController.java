@@ -56,11 +56,16 @@ public class BookController {
     }
 
     @PostMapping("/books")
-    public void createBook(@RequestBody Book book) {
+    public Book createBook(@RequestBody Book book) {
         try {
-            bookOperations.createBook(book);
+            return bookOperations.createBook(book);
         } catch (BadRequestException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @DeleteMapping("/books/{id}")
+    public void deleteBook(@PathVariable String id) {
+        bookOperations.delete(id);
     }
 }
