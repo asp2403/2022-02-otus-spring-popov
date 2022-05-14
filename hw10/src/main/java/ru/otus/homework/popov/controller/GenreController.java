@@ -15,7 +15,7 @@ public class GenreController {
         this.genreOperations = genreOperations;
     }
 
-    @GetMapping("/genres")
+    @GetMapping("/api/genres")
     public List<Genre> getGenres() {
         return genreOperations.findAll();
     }

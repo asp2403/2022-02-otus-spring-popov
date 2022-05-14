@@ -63,7 +63,7 @@ class BookControllerTest {
         var book2 = new Book("2", title2, author2, genre2);
         var books = Arrays.asList(book1, book2);
         given(bookOperations.findAll()).willReturn(books);
-        mvc.perform(MockMvcRequestBuilders.get("/books"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/books"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(books)));
     }
@@ -80,7 +80,7 @@ class BookControllerTest {
         var book = new Book(bookId, bookTitle, new Author(authorId1, authorName1), new Genre(genreId1, genreName1));
         given(bookOperations.findById(eq("1"))).willReturn(Optional.of(book));
 
-        mvc.perform(MockMvcRequestBuilders.get("/books/1"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/books/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(book)));
 
@@ -90,9 +90,9 @@ class BookControllerTest {
     @DisplayName("должен выдавать NotFound при запросе книги по несуществующему ИД")
     @Test
     void shouldThrowNotFoundWhenBookIsNotExist() throws Exception {
-        given(bookOperations.findById(eq("100"))).willThrow(NotFoundException.class);
+        given(bookOperations.findById(eq("100"))).willReturn(Optional.empty());
 
-        mvc.perform(MockMvcRequestBuilders.get("/books/100"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/books/100"))
                 .andExpect(status().isNotFound());
     }
 
@@ -106,7 +106,7 @@ class BookControllerTest {
 
         given(commentOperations.findByBookId(eq("1"))).willReturn(comments);
 
-        mvc.perform(MockMvcRequestBuilders.get("/books/1/comments"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/books/1/comments"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(commentDtos)));
     }
@@ -125,7 +125,7 @@ class BookControllerTest {
         var newBook = new Book(bookId, newTitle, newAuthor, newGenre);
         var contentBody = mapper.writeValueAsString(newBook);
 
-        mvc.perform(MockMvcRequestBuilders.put("/books").contentType(APPLICATION_JSON)
+        mvc.perform(MockMvcRequestBuilders.put("/api/books").contentType(APPLICATION_JSON)
                         .content(contentBody))
                 .andExpect(status().isOk());
     }
@@ -146,7 +146,7 @@ class BookControllerTest {
 
         doThrow(new NotFoundException()).when(bookOperations).updateBook(newBook);
 
-        mvc.perform(MockMvcRequestBuilders.put("/books").contentType(APPLICATION_JSON)
+        mvc.perform(MockMvcRequestBuilders.put("/api/books").contentType(APPLICATION_JSON)
                         .content(contentBody))
                 .andExpect(status().isNotFound());
 
@@ -170,7 +170,7 @@ class BookControllerTest {
         bookCreated.setId(newId);
         var expected = mapper.writeValueAsString(bookCreated);
         given(bookOperations.createBook(eq(newBook))).willReturn(bookCreated);
-        mvc.perform(MockMvcRequestBuilders.post("/books").contentType(APPLICATION_JSON)
+        mvc.perform(MockMvcRequestBuilders.post("/api/books").contentType(APPLICATION_JSON)
                         .content(contentBody))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
@@ -192,7 +192,7 @@ class BookControllerTest {
 
         doThrow(new BadRequestException()).when(bookOperations).createBook(newBook);
 
-        mvc.perform(MockMvcRequestBuilders.post("/books").contentType(APPLICATION_JSON)
+        mvc.perform(MockMvcRequestBuilders.post("/api/books").contentType(APPLICATION_JSON)
                 .content(contentBody))
                 .andExpect(status().isBadRequest());
 
@@ -201,7 +201,7 @@ class BookControllerTest {
     @DisplayName("должен корректно удалять книгу")
     @Test
     void shouldCorrectDeleteBook() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/books/1"))
+        mvc.perform(MockMvcRequestBuilders.delete("/api/books/1"))
                 .andExpect(status().isOk());
     }
 }

@@ -43,7 +43,7 @@ class GenreControllerTest {
 
         given(genreOperations.findAll()).willReturn(genres);
 
-        mvc.perform(MockMvcRequestBuilders.get("/genres"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/genres"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }

@@ -15,7 +15,7 @@ public class AuthorController {
         this.authorOperations = authorOperations;
     }
 
-    @GetMapping("/authors")
+    @GetMapping("/api/authors")
     public List<Author> getAuthors() {
         return authorOperations.findAll();
     }

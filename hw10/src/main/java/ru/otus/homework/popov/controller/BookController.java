@@ -23,30 +23,24 @@ public class BookController {
         this.commentOperations = commentOperations;
     }
 
-    @GetMapping("/books")
+    @GetMapping("/api/books")
     public List<Book> getBooks() {
         return bookOperations.findAll();
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/api/books/{id}")
     public Book getBook(@PathVariable String id) {
-        Book book;
-        try {
-            book = bookOperations.findById(id).orElseThrow(NotFoundException::new);
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return book;
+            return bookOperations.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/books/{id}/comments")
+    @GetMapping("/api/books/{id}/comments")
     public List<CommentDto> getComments(@PathVariable("id") String bookId) {
         var comments = commentOperations.findByBookId(bookId);
         var commentDtos = comments.stream().map(CommentDto::fromDomainObject).collect(Collectors.toList());
         return commentDtos;
     }
 
-    @PutMapping("/books")
+    @PutMapping("/api/books")
     public void updateBook(@RequestBody Book book) {
         try {
             bookOperations.updateBook(book);
@@ -55,7 +49,7 @@ public class BookController {
         }
     }
 
-    @PostMapping("/books")
+    @PostMapping("/api/books")
     public Book createBook(@RequestBody Book book) {
         try {
             return bookOperations.createBook(book);
@@ -64,7 +58,7 @@ public class BookController {
         }
     }
 
-    @DeleteMapping("/books/{id}")
+    @DeleteMapping("/api/books/{id}")
     public void deleteBook(@PathVariable String id) {
         bookOperations.delete(id);
     }

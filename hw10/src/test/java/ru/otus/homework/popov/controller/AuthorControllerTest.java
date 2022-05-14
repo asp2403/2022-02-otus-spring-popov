@@ -45,7 +45,7 @@ class AuthorControllerTest {
 
         given(authorOperations.findAll()).willReturn(authors);
 
-        mvc.perform(MockMvcRequestBuilders.get("/authors"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/authors"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
     }
