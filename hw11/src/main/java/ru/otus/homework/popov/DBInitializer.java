@@ -41,14 +41,7 @@ public class DBInitializer {
         var book1 = new Book("1", "Война и мир", new Author("1", "Лев Толстой"), new Genre("1", "Русская классика"));
         var book2 = new Book("2", "Кладбище домашних животных", new Author("2", "Стивен Кинг"), new Genre("3", "Ужасы"));
         var book3 = new Book("3", "Властелин колец", new Author("3", "Дж. Р.Р. Толкин"), new Genre("2", "Фэнтези"));
-        bookRepository.save(book1).subscribe();
-        bookRepository.save(book2).subscribe();
-        bookRepository.save(book3).subscribe();
-    }
-
-    private void insertComments(CommentRepository commentRepository, BookRepository bookRepository) {
-        var book1 = bookRepository.findById("1");
-        book1.subscribe(
+        bookRepository.save(book1).subscribe(
                 b -> {
                     var comment1 = new Comment("1", "Восхитительно!");
                     var comment2 = new Comment("2", "Многабукв. Ниасилил...");
@@ -61,8 +54,7 @@ public class DBInitializer {
                     );
                 }
         );
-        var book2 = bookRepository.findById("2");
-        book2.subscribe(
+        bookRepository.save(book2).subscribe(
                 b -> {
                     var comment3 = new Comment("3", "Кису жалко");
                     b.addComment(comment3);
@@ -71,8 +63,7 @@ public class DBInitializer {
                     );
                 }
         );
-        var book3 = bookRepository.findById("3");
-        book3.subscribe(
+        bookRepository.save(book3).subscribe(
                 b -> {
                     var comment4 = new Comment("4", "Надо было лететь на орлах!");
                     b.addComment(comment4);
@@ -83,10 +74,11 @@ public class DBInitializer {
         );
     }
 
+
+
     public void init() {
         insertAuthors(authorRepository);
         insertGenres(genreRepository);
         insertBooks(bookRepository);
-        insertComments(commentRepository, bookRepository);
     }
 }
