@@ -9,6 +9,3 @@ spring:
     mongodb:
       port: 0
       database: books
-mongock:
-  change-logs-scan-package:
-    - ru.otus.homework.popov.mongock.changelog
