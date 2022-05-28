@@ -1,0 +1,11 @@
+logging:
+  level:
+    root: INFO
+spring:
+  mongodb:
+    embedded:
+      version: 3.5.5
+  data:
+    mongodb:
+      port: 0
+      database: books
