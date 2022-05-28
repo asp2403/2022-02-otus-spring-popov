@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<div th:fragment="nav">
+    <nav class="navbar navbar-dark bg-dark text-white">
+        <div class="container-fluid">
+            <div class="navbar-brand" href="#">
+                <img class="d-inline-block align-text-center" height="50" src="../static/book.svg" th:src="@{book.svg}" width="50"/>
+                Библиотека
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
