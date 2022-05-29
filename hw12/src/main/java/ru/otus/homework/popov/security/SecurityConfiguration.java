@@ -19,20 +19,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure( WebSecurity web ) {
-        web.ignoring().antMatchers( "/" );
-    }
-
-    @Override
     public void configure( HttpSecurity http ) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers( "/book-details" )
+                .authorizeRequests().antMatchers( "/", "/book-details" )
                 .permitAll()
                 .and()
                 .authorizeRequests().antMatchers( "/add-book", "/edit-book", "/del-book", "/save-book" ).authenticated()
                 .and()
-                // Включает Form-based аутентификацию
                 .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll()
+                .logoutSuccessUrl("/")
               ;
     }
 

@@ -11,7 +11,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 public class Hw12Application {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(Hw12Application.class, args);
+		System.out.println("Server ready...");
 	}
 
 }

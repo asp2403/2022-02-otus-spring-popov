@@ -81,8 +81,8 @@ public class Changelog {
     @ChangeSet(order = "006", id = "insertUsers", author = "apopov")
     public void insertUsers(UserRepository repository) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String hashedPassword = passwordEncoder.encode( "12345678");
-        var user = new User("1", "admin", hashedPassword, Arrays.asList(new SimpleGrantedAuthority("admin")));
+        String hashedPassword = passwordEncoder.encode( "123");
+        var user = new User("1", "admin", hashedPassword, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
         repository.save(user);
     }
 
