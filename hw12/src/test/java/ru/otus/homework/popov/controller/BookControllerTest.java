@@ -1,22 +1,25 @@
 package ru.otus.homework.popov.controller;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import ru.otus.homework.popov.domain.Author;
 import ru.otus.homework.popov.domain.Book;
 import ru.otus.homework.popov.domain.Comment;
 import ru.otus.homework.popov.domain.Genre;
-import ru.otus.homework.popov.dto.BookDto;
 import ru.otus.homework.popov.service.AuthorOperations;
 import ru.otus.homework.popov.service.BookOperations;
 import ru.otus.homework.popov.service.CommentOperations;
@@ -26,10 +29,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -52,6 +55,7 @@ class BookControllerTest {
     @MockBean
     private CommentOperations commentOperations;
 
+    @WithAnonymousUser
     @DisplayName("должен корректно выводить стартовую страницу")
     @Test
     void shouldCorrectOutputIndexPage() throws Exception {
@@ -80,6 +84,8 @@ class BookControllerTest {
                 .andExpect(content().string(containsString(title2)));
     }
 
+
+    @WithMockUser("admin")
     @DisplayName("должен корректно выводить страницу создания книги")
     @Test
     void shouldCorrectOutputAddBookPage() throws Exception {
@@ -107,6 +113,7 @@ class BookControllerTest {
                 .andExpect(content().string(containsString(genreName2)));
     }
 
+    @WithMockUser("admin")
     @DisplayName("должен корректно выводить страницу редактирования книги")
     @Test
     void shouldCorrectOutputBookEditPage() throws Exception {
@@ -131,17 +138,20 @@ class BookControllerTest {
                 .andExpect(content().string(containsString(bookTitle)));
     }
 
+    @WithMockUser("admin")
     @DisplayName("должен корректно сохранять книгу")
     @Test
     void shouldCorrectSaveBook() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/save-book")
-                .param("mode", "add")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content("id=1&author.id=1&genre.id=1&title=NewBook"))
+                        .with(csrf())
+                        .param("mode", "add")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("id=1&author.id=1&genre.id=1&title=NewBook"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
     }
 
+    @WithAnonymousUser
     @DisplayName("должен корректно показывать информацию о книге")
     @Test
     void shouldCorrectOutputBookDetails() throws Exception {
@@ -166,6 +176,7 @@ class BookControllerTest {
                 .andExpect(content().string(containsString(comment2)));
     }
 
+    @WithMockUser("admin")
     @DisplayName("должен показывать страницу подтверждения удаления книги")
     @Test
     void shouldOutputDelBookConfirmationPage() throws Exception {
@@ -177,11 +188,12 @@ class BookControllerTest {
                 .andExpect(content().string(containsString(bookTitle)));
     }
 
+    @WithMockUser("admin")
     @DisplayName("должен корректно удалять книгу")
     @Test
     void shouldCorrectDelBook() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post("/del-book").param("id", "1"))
+        mvc.perform(MockMvcRequestBuilders.post("/del-book").param("id", "1").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 

@@ -7,7 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.otus.homework.popov.domain.*;
 import ru.otus.homework.popov.repository.*;
-import ru.otus.homework.popov.security.User;
+import ru.otus.homework.popov.domain.User;
 
 import java.util.Arrays;
 

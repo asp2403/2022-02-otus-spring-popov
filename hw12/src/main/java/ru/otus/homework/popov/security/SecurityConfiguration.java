@@ -1,6 +1,7 @@
 package ru.otus.homework.popov.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -21,18 +22,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure( HttpSecurity http ) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers( "/", "/book-details" )
-                .permitAll()
+                .authorizeRequests()
+                    .antMatchers("/add-book", "/edit-book", "/del-book", "/save-book")
+                    .authenticated()
                 .and()
-                .authorizeRequests().antMatchers( "/add-book", "/edit-book", "/del-book", "/save-book" ).authenticated()
+                    .authorizeRequests()
+                    .antMatchers( "/", "/book-details" )
+                    .permitAll()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                    .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
                 .and()
-                .logout()
-                .permitAll()
-                .logoutSuccessUrl("/")
+                    .logout()
+                    .logoutSuccessUrl("/")
+                    .permitAll()
+                .and()
+                    .rememberMe()
+                
               ;
     }
 

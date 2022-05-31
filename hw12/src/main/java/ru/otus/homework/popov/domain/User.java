@@ -1,4 +1,4 @@
-package ru.otus.homework.popov.security;
+package ru.otus.homework.popov.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

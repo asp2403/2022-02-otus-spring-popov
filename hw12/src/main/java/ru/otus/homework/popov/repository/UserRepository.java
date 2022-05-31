@@ -1,7 +1,7 @@
 package ru.otus.homework.popov.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import ru.otus.homework.popov.security.User;
+import ru.otus.homework.popov.domain.User;
 
 import java.util.Optional;
 
