@@ -1,9 +1,7 @@
 package ru.otus.homework.popov.controller;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,15 +9,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import ru.otus.homework.popov.domain.Author;
 import ru.otus.homework.popov.domain.Book;
 import ru.otus.homework.popov.domain.Comment;
 import ru.otus.homework.popov.domain.Genre;
+import ru.otus.homework.popov.security.AppUserDetailsService;
+import ru.otus.homework.popov.security.SecurityConfiguration;
 import ru.otus.homework.popov.service.AuthorOperations;
 import ru.otus.homework.popov.service.BookOperations;
 import ru.otus.homework.popov.service.CommentOperations;
@@ -31,13 +28,11 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @WebMvcTest(BookController.class)
-@ContextConfiguration(classes = BookController.class)
+@ContextConfiguration(classes = {BookController.class, SecurityConfiguration.class})
 class BookControllerTest {
 
     @Autowired
@@ -54,6 +49,9 @@ class BookControllerTest {
 
     @MockBean
     private CommentOperations commentOperations;
+
+    @MockBean
+    private AppUserDetailsService appUserDetailsService;
 
     @WithAnonymousUser
     @DisplayName("должен корректно выводить стартовую страницу")
@@ -113,6 +111,16 @@ class BookControllerTest {
                 .andExpect(content().string(containsString(genreName2)));
     }
 
+    @WithAnonymousUser
+    @DisplayName("не должен выводить страницу создания книги для анонимного пользователя")
+    @Test
+    void shouldNotOutputAddBookPageForAnon() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/add-book"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"))
+                ;
+    }
+
     @WithMockUser("admin")
     @DisplayName("должен корректно выводить страницу редактирования книги")
     @Test
@@ -138,17 +146,38 @@ class BookControllerTest {
                 .andExpect(content().string(containsString(bookTitle)));
     }
 
+    @WithAnonymousUser
+    @DisplayName("не должен выводить страницу редактирования книги для анонимного пользователя")
+    @Test
+    void shouldNotOutputBookEditPageForAnon() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/edit-book").param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"))
+                ;
+    }
+
     @WithMockUser("admin")
     @DisplayName("должен корректно сохранять книгу")
     @Test
     void shouldCorrectSaveBook() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/save-book")
-                        .with(csrf())
                         .param("mode", "add")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .content("id=1&author.id=1&genre.id=1&title=NewBook"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+    }
+
+    @WithAnonymousUser
+    @DisplayName("не должен сохранять книгу для анонимного пользователя")
+    @Test
+    void shouldNotSaveBookForAnon() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/save-book")
+                        .param("mode", "add")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("id=1&author.id=1&genre.id=1&title=NewBook"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
     @WithAnonymousUser
@@ -188,14 +217,34 @@ class BookControllerTest {
                 .andExpect(content().string(containsString(bookTitle)));
     }
 
+    @WithAnonymousUser
+    @DisplayName("не должен показывать страницу подтверждения удаления книги для анонимных пользователей")
+    @Test
+    void shouldNotOutputDelBookConfirmationPageForAnon() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/del-book").param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+    }
+
     @WithMockUser("admin")
     @DisplayName("должен корректно удалять книгу")
     @Test
     void shouldCorrectDelBook() throws Exception {
 
-        mvc.perform(MockMvcRequestBuilders.post("/del-book").param("id", "1").with(csrf()))
+        mvc.perform(MockMvcRequestBuilders.post("/del-book").param("id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+
+    }
+
+    @WithAnonymousUser
+    @DisplayName("не должен удалять книгу для анонимных пользователей")
+    @Test
+    void shouldNotDelBookForAnon() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.post("/del-book").param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
 
     }
 }
