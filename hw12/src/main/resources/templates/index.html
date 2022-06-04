@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${title}"></title>
+    <link href="../static/bootstrap.min.css" th:href="@{bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/style.css" th:href="@{style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div th:insert="~{header :: nav}"></div>
+    <h2 th:text="${title}">
+        Список книг
+    </h2>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-outline-primary" href="book.html" th:href="@{/add-book}">Добавить книгу</a>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Автор</th>
+            <th scope="col">Название</th>
+            <th scope="col">Жанр</th>
+            <th scope="col">Комментарии</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.author.name}">А.С. Пушкин</td>
+            <td th:text="${book.title}">Капитанская дочка</td>
+            <td th:text="${book.genre.name}">Русская классика</td>
+            <td th:text="${book.commentCount}">100</td>
+            <td>
+                <a th:href="@{/book-details(id=${book.id})}" href="book-details.html"><img src="../static/eye.svg"
+                                                                                           th:src="@{eye.svg}"
+                                                                                           title="Информация"/></a>
+                <a th:href="@{/edit-book(id=${book.id})}" href="book.html"><img src="../static/pencil.svg"
+                                                                                th:src="@{pencil.svg}"
+                                                                                title="Изменить"/></a>
+                <a th:href="@{/del-book(id=${book.id})}"><img src="../static/trash.svg" th:src="@{trash.svg}"
+                                                              title="Удалить"></a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<script src="../static/bootstrap.bundle.min.js" th:src="@{bootstrap.bundle.min.js}"></script>
+</body>
+</html>

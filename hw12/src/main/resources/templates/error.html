@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${title}"></title>
+    <link href="../static/bootstrap.min.css" th:href="@{bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/style.css" th:href="@{style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div th:insert="~{header :: nav}"></div>
+    <h2>
+        Произошла ошибка при работе приложения
+    </h2>
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-danger" role="alert" th:text="${error} + '(' + ${status} + '): ' + ${message}">
+                Error!
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="../static/bootstrap.bundle.min.js" th:src="@{bootstrap.bundle.min.js}"></script>
+</body>
+</html>
