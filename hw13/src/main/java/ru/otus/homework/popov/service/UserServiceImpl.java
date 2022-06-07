@@ -18,31 +18,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<String> login(String username, String password) {
+    public Optional<User> login(String username, String password) {
         var user = userRepository.findByUsername(username);
         return user.flatMap(
             u -> {
                 var passwordEncoder = new BCryptPasswordEncoder();
                 if (passwordEncoder.matches(password, u.getPassword())) {
-                    var token = u.getToken();
-                    if (token == null) {
-                        token = UUID.randomUUID().toString();
-                        u.setToken(token);
-                        userRepository.save(u);
-                    }
-                    return Optional.of(token);
+                    var token = UUID.randomUUID().toString();
+                    u.setToken(token);
+                    userRepository.save(u);
+                    return Optional.of(u);
                 } else {
                     return Optional.empty();
                 }
             }
-
         );
-
     }
 
     @Override
     public Optional<User> findByToken(String token) {
-        return userRepository.findByToken(token);
+        var user = userRepository.findByToken(token);
+        return user;
     }
 
     @Override

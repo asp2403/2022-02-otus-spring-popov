@@ -101,8 +101,8 @@ class BookControllerTest {
     void shouldCorrectGetComments() throws Exception {
         var comment1 = "Comment1";
         var comment2 = "Comment2";
-        var comments = Arrays.asList(new Comment("1", comment1), new Comment("2", comment2));
-        var commentDtos = Arrays.asList(new CommentDto("1", comment1), new CommentDto("2", comment2));
+        var comments = Arrays.asList(new Comment("1", comment1, "Author1"), new Comment("2", comment2, "Author2"));
+        var commentDtos = Arrays.asList(new CommentDto("1", comment1, "Author1", "1"), new CommentDto("2", comment2, "Author2", "2"));
 
         given(commentOperations.findByBookId(eq("1"))).willReturn(comments);
 

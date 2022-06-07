@@ -11,12 +11,15 @@ public class Comment {
     @Id
     private String id;
     private String text;
+    private String author;
+
     @DBRef
     private Book book;
 
-    public Comment(String id, String text) {
+    public Comment(String id, String text, String author) {
         this.id = id;
         this.text = text;
+        this.author = author;
     }
 
     public Comment() {}
@@ -39,6 +42,14 @@ public class Comment {
 
     public String getText() {
         return text;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public void setText(String text) {

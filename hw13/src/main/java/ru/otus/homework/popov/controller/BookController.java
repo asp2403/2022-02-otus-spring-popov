@@ -1,6 +1,8 @@
 package ru.otus.homework.popov.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.otus.homework.popov.controller.dto.CommentDto;
@@ -60,6 +62,7 @@ public class BookController {
 
     @DeleteMapping("/api/books/{id}")
     public void deleteBook(@PathVariable String id) {
+
         bookOperations.delete(id);
     }
 }

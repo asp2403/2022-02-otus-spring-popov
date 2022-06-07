@@ -1,6 +1,9 @@
 logging:
   level:
-    root: INFO
+    root: ERROR
+    org:
+      springframework:
+        security: ERROR
 spring:
   mongodb:
     embedded:

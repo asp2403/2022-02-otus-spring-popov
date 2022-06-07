@@ -1,8 +1,10 @@
 package ru.otus.homework.popov.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,14 +16,16 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import ru.otus.homework.popov.service.UserService;
 
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(
             new AntPathRequestMatcher("/api/books", "PUT", false),
             new AntPathRequestMatcher("/api/books", "POST", false),
-            new AntPathRequestMatcher("/api/books/{id}", "DELETE", false),
-            new AntPathRequestMatcher("/logout", "POST", false)
+            new AntPathRequestMatcher("/api/books/*", "DELETE", false),
+            new AntPathRequestMatcher("/auth/logout", "POST", false),
+            new AntPathRequestMatcher("/api/comments", "POST", false),
+            new AntPathRequestMatcher("/api/comments/*", "DELETE", false)
     );
 
 
@@ -36,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) {
-        webSecurity.ignoring().antMatchers("/token/**");
+        webSecurity.ignoring().antMatchers("/auth/login");
     }
 
     @Override
@@ -47,10 +51,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .and()
-                .authenticationProvider(provider)
-                .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
+                    .authenticationProvider(provider)
+                    .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
+
                 .authorizeRequests()
-                .requestMatchers(PROTECTED_URLS)
+                    .antMatchers(HttpMethod.POST,"/api/comments")
+                    .hasAnyRole("USER", "MODERATOR", "ADMIN")
+                .and()
+                    .authorizeRequests()
+                    .antMatchers(HttpMethod.DELETE, "/api/comments/*")
+                    .hasAnyRole("MODERATOR", "ADMIN")
+                .and()
+                    .authorizeRequests()
+                    .antMatchers(HttpMethod.POST, "/api/books")
+                    .hasRole("ADMIN")
+                .and()
+                    .authorizeRequests()
+                    .antMatchers(HttpMethod.PUT, "/api/books")
+                    .hasRole("ADMIN")
+                .and()
+                    .authorizeRequests()
+                    .antMatchers(HttpMethod.DELETE, "/api/books/*")
+                    .hasRole("ADMIN")
+                .and()
+                    .authorizeRequests()
+                    .antMatchers("/auth/logout")
                     .authenticated()
                 .and()
                     .authorizeRequests()
