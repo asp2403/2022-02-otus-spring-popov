@@ -16,7 +16,8 @@ public class CommentDto {
     }
 
     public static CommentDto fromDomainObject(Comment comment) {
-        return new CommentDto(comment.getId(), comment.getText(), comment.getAuthor(), comment.getBook().getId());
+        var bookId = comment.getBook() != null ? comment.getBook().getId() : null;
+        return new CommentDto(comment.getId(), comment.getText(), comment.getAuthor(), bookId);
     }
 
     public String getBookId() {

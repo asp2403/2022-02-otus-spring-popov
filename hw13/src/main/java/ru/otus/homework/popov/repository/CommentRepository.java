@@ -7,7 +7,7 @@ import ru.otus.homework.popov.domain.Comment;
 import java.util.List;
 
 public interface CommentRepository extends MongoRepository<Comment, String> {
-    @Query(fields = "{ 'text': 1 }")
+    @Query(fields = "{ 'text': 1, 'author': 1 }")
     List<Comment> findByBookId(String bookId);
 
     void deleteByBookId(String bookId);

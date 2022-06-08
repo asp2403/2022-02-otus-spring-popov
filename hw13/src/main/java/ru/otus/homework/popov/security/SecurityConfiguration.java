@@ -48,8 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling()
+
                 .and()
                     .authenticationProvider(provider)
                     .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
