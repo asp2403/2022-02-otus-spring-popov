@@ -20,12 +20,12 @@ import ru.otus.homework.popov.service.UserService;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(
-            new AntPathRequestMatcher("/api/books", "PUT", false),
-            new AntPathRequestMatcher("/api/books", "POST", false),
-            new AntPathRequestMatcher("/api/books/*", "DELETE", false),
-            new AntPathRequestMatcher("/auth/logout", "POST", false),
-            new AntPathRequestMatcher("/api/comments", "POST", false),
-            new AntPathRequestMatcher("/api/comments/*", "DELETE", false)
+            new AntPathRequestMatcher("/api/books/**", "PUT", false),
+            new AntPathRequestMatcher("/api/books/**", "POST", false),
+            new AntPathRequestMatcher("/api/books/**", "DELETE", false),
+            new AntPathRequestMatcher("/auth/logout/**", "POST", false),
+            new AntPathRequestMatcher("/api/comments/**", "POST", false),
+            new AntPathRequestMatcher("/api/comments/**", "DELETE", false)
     );
 
 
@@ -40,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) {
-        webSecurity.ignoring().antMatchers("/auth/login");
+        webSecurity.ignoring().antMatchers("/auth/login/**");
     }
 
     @Override
@@ -54,27 +54,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
 
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.POST,"/api/comments")
+                    .antMatchers(HttpMethod.POST,"/api/comments/**")
                     .hasAnyRole("USER", "MODERATOR", "ADMIN")
                 .and()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.DELETE, "/api/comments/*")
+                    .antMatchers(HttpMethod.DELETE, "/api/comments/**")
                     .hasAnyRole("MODERATOR", "ADMIN")
                 .and()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/api/books")
+                    .antMatchers(HttpMethod.POST, "/api/books/**")
                     .hasRole("ADMIN")
                 .and()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.PUT, "/api/books")
+                    .antMatchers(HttpMethod.PUT, "/api/books/**")
                     .hasRole("ADMIN")
                 .and()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.DELETE, "/api/books/*")
+                    .antMatchers(HttpMethod.DELETE, "/api/books/**")
                     .hasRole("ADMIN")
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/auth/logout")
+                    .antMatchers("/auth/logout/**")
                     .authenticated()
                 .and()
                     .authorizeRequests()
