@@ -2,7 +2,10 @@ server:
   port: 8090
 logging:
   level:
-    root: INFO
+    root: ERROR
+    org:
+      springframework:
+        security: TRACE
 spring:
   mongodb:
     embedded:

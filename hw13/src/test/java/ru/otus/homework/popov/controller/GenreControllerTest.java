@@ -10,8 +10,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.otus.homework.popov.domain.Genre;
+import ru.otus.homework.popov.security.AuthenticationProvider;
+import ru.otus.homework.popov.security.SecurityConfiguration;
 import ru.otus.homework.popov.service.AuthorOperations;
 import ru.otus.homework.popov.service.GenreOperations;
+import ru.otus.homework.popov.service.UserService;
 
 import java.util.Arrays;
 
@@ -21,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GenreController.class)
-@ContextConfiguration(classes = GenreController.class)
+@ContextConfiguration(classes = {GenreController.class, SecurityConfiguration.class})
 class GenreControllerTest {
 
     @Autowired
@@ -29,6 +32,12 @@ class GenreControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
 
     @MockBean
     private GenreOperations genreOperations;
