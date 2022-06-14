@@ -1,9 +1,13 @@
 package ru.otus.homework.popov.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,9 +15,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -34,6 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -43,7 +51,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookController.class)
-@ContextConfiguration(classes = {BookController.class, SecurityConfiguration.class})
+@ContextConfiguration(classes = {BookController.class, SecurityConfiguration.class, AuthenticationProvider.class})
 class BookControllerTest {
 
     @Autowired
@@ -52,7 +60,7 @@ class BookControllerTest {
     @MockBean
     private UserService userService;
 
-    @MockBean
+    @Autowired
     private AuthenticationProvider authenticationProvider;
 
     @MockBean
@@ -64,8 +72,6 @@ class BookControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
-    private WebApplicationContext context;
 
     @DisplayName("должен корректно выводить список книг")
     @Test
@@ -138,8 +144,12 @@ class BookControllerTest {
     }
 
     @DisplayName("должен корректно обновлять книгу")
-    @Test
-    void shouldCorrectUpdateBook() throws Exception {
+    @ParameterizedTest
+    @MethodSource("generateData")
+    void shouldCorrectUpdateBook(String authority, ResultMatcher matcher) throws Exception {
+        var user = new User();
+        user.setRoles(List.of(new SimpleGrantedAuthority(authority)));
+        given(userService.findByToken(any())).willReturn(Optional.of(user));
         var authorName2 = "Author2";
         var authorId2 = "2";
         var genreName2 = "Genre2";
@@ -152,13 +162,15 @@ class BookControllerTest {
         var contentBody = mapper.writeValueAsString(newBook);
 
         mvc.perform(MockMvcRequestBuilders.put("/api/books").contentType(APPLICATION_JSON)
-                        .content(contentBody).with(user("admin").roles("ADMIN")))
-                .andExpect(status().isOk());
+                        .content(contentBody).header("AUTHORIZATION", "Bearer XXXXXXXXXXXXX"))
+                .andExpect(matcher);
     }
 
     @DisplayName("должен выдавать NotFound, если книги, которую пытаюися обновить, не существует")
     @Test
     void shouldThrowNotFoundIfBookIsNotExistWhenUpdate() throws Exception {
+        var user = new User(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        given(userService.findByToken(any())).willReturn(Optional.of(user));
         var authorName2 = "Author2";
         var authorId2 = "2";
         var genreName2 = "Genre2";
@@ -173,7 +185,7 @@ class BookControllerTest {
         doThrow(new NotFoundException()).when(bookOperations).updateBook(newBook);
 
         mvc.perform(MockMvcRequestBuilders.put("/api/books").contentType(APPLICATION_JSON)
-                        .content(contentBody).with(user("admin").roles("ADMIN")))
+                        .content(contentBody).header("AUTHORIZATION", "Bearer XXXXXXXXXXXXX"))
                 .andExpect(status().isNotFound());
 
     }
@@ -182,7 +194,9 @@ class BookControllerTest {
     @DisplayName("должен корректно создавать книгу")
     @Test
     void shouldCorrectCreateBook() throws Exception {
-
+        var user = new User();
+        user.setRoles(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        given(userService.findByToken(any())).willReturn(Optional.of(user));
         var authorName2 = "Author2";
         var authorId2 = "2";
         var genreName2 = "Genre2";
@@ -199,14 +213,54 @@ class BookControllerTest {
         var expected = mapper.writeValueAsString(bookCreated);
         given(bookOperations.createBook(eq(newBook))).willReturn(bookCreated);
         mvc.perform(MockMvcRequestBuilders.post("/api/books").contentType(APPLICATION_JSON)
-                        .content(contentBody).with(user("admin").roles("ADMIN")))
+                        .content(contentBody).header("AUTHORIZATION", "Bearer XXXXXXXXXXXXX"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
+    }
+
+    @DisplayName("должен корректно авторизовать пользователей для создания книги")
+    @ParameterizedTest
+    @MethodSource("generateData")
+    void shouldCorrectAuthorizeUsersForCreatingBook(String authority, ResultMatcher matcher) throws Exception {
+        var user = new User();
+        user.setRoles(List.of(new SimpleGrantedAuthority(authority)));
+        given(userService.findByToken(any())).willReturn(Optional.of(user));
+        var authorName2 = "Author2";
+        var authorId2 = "2";
+        var genreName2 = "Genre2";
+        var genreId2 = "2";
+        String bookId = null;
+        var newTitle = "Title2";
+        var newAuthor = new Author(authorId2, authorName2);
+        var newGenre = new Genre(genreId2, genreName2);
+        var newBook = new Book(bookId, newTitle, newAuthor, newGenre);
+        var contentBody = mapper.writeValueAsString(newBook);
+        var bookCreated = new Book(bookId, newTitle, newAuthor, newGenre);
+        var newId = "newid";
+        bookCreated.setId(newId);
+        var expected = mapper.writeValueAsString(bookCreated);
+        given(bookOperations.createBook(eq(newBook))).willReturn(bookCreated);
+        mvc.perform(MockMvcRequestBuilders.post("/api/books").contentType(APPLICATION_JSON)
+                        .content(contentBody).header("AUTHORIZATION", "Bearer XXXXXXXXXXXXX"))
+                .andExpect(matcher)
+                ;
+    }
+
+    private static Stream<Arguments> generateData() {
+        return Stream.of(
+                Arguments.of("ROLE_ANONYMOUS", status().isForbidden()),
+                Arguments.of("ROLE_USER", status().isForbidden()),
+                Arguments.of("ROLE_MODERATOR", status().isForbidden()),
+                Arguments.of("ROLE_ADMIN",status().isOk())
+        );
     }
 
     @DisplayName("должен выдавать BadRequest, если новая книга имеет ИД, отличный от null")
     @Test
     void shouldThrowBadRequestIfBookHasNotNullId() throws Exception {
+        var user = new User();
+        user.setRoles(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        given(userService.findByToken(any())).willReturn(Optional.of(user));
         var authorName2 = "Author2";
         var authorId2 = "2";
         var genreName2 = "Genre2";
@@ -221,15 +275,18 @@ class BookControllerTest {
         doThrow(new BadRequestException()).when(bookOperations).createBook(newBook);
 
         mvc.perform(MockMvcRequestBuilders.post("/api/books").contentType(APPLICATION_JSON)
-                .content(contentBody).with(user("admin").roles("ADMIN")))
+                .content(contentBody).header("AUTHORIZATION", "Bearer XXXXXXXXXXXXX"))
                 .andExpect(status().isBadRequest());
 
     }
 
     @DisplayName("должен корректно удалять книгу")
-    @Test
-    void shouldCorrectDeleteBook() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/api/books/1").with(user("admin").roles("ADMIN")))
-                .andExpect(status().isOk());
+    @ParameterizedTest
+    @MethodSource("generateData")
+    void shouldCorrectDeleteBook(String authority, ResultMatcher matcher) throws Exception {
+        var user = new User(List.of(new SimpleGrantedAuthority(authority)));
+        given(userService.findByToken(any())).willReturn(Optional.of(user));
+        mvc.perform(MockMvcRequestBuilders.delete("/api/books/1").header("AUTHORIZATION", "Bearer XXXXXXXXXXXXX"))
+                .andExpect(matcher);
     }
 }

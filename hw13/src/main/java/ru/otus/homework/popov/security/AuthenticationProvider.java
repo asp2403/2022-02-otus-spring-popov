@@ -28,10 +28,11 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     protected UserDetails retrieveUser(String userName, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
 
         Object token = usernamePasswordAuthenticationToken.getCredentials();
-        return Optional
+        var user = Optional
                 .ofNullable(token)
                 .map(String::valueOf)
-                .flatMap(userService::findByToken)
-                .orElseThrow(() -> new UsernameNotFoundException("Cannot find user with authentication token=" + token));
+                .flatMap(userService::findByToken);
+        var result = user.orElseThrow(() -> new UsernameNotFoundException("Cannot find user with authentication token=" + token));
+        return result;
     }
 }

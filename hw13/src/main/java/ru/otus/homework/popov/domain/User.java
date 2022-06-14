@@ -34,6 +34,22 @@ public class User implements UserDetails {
         this.surname = surname;
     }
 
+    public User(List<SimpleGrantedAuthority> roles) {
+        this.roles = roles;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRoles(List<SimpleGrantedAuthority> roles) {
+        this.roles = roles;
+    }
+
     public String getFullName() {
         return name + " " + surname;
     }
