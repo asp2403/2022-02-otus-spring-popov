@@ -1,16 +1,16 @@
-package ru.otus.homework.popov.hw14.domain;
+package ru.otus.homework.popov.hw14.domain.rdb;
 
 import java.util.Objects;
 
-public class Comment {
+public class RdbComment {
     private long id;
     private String text;
-    private Book book;
+    private RdbBook book;
 
-    public Comment() {
+    public RdbComment() {
     }
 
-    public Comment(long id, String text, Book book) {
+    public RdbComment(long id, String text, RdbBook book) {
         this.id = id;
         this.text = text;
         this.book = book;
@@ -32,11 +32,11 @@ public class Comment {
         this.text = text;
     }
 
-    public Book getBook() {
+    public RdbBook getBook() {
         return book;
     }
 
-    public void setBook(Book book) {
+    public void setBook(RdbBook book) {
         this.book = book;
 
     }
@@ -45,7 +45,7 @@ public class Comment {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
+        RdbComment comment = (RdbComment) o;
         return id == comment.id && Objects.equals(text, comment.text) ;
     }
 

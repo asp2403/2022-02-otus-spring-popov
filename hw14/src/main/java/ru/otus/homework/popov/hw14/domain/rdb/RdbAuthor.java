@@ -1,19 +1,24 @@
-package ru.otus.homework.popov.hw14.domain;
+package ru.otus.homework.popov.hw14.domain.rdb;
+
+import ru.otus.homework.popov.hw14.domain.mongo.MongoAuthor;
 
 import java.util.Objects;
 
-public class Genre {
+public class RdbAuthor {
 
     private long id;
 
     private String name;
 
-    public Genre() {
-    }
+    public RdbAuthor(){}
 
-    public Genre(long id, String name) {
+    public RdbAuthor(long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static MongoAuthor toMongo(RdbAuthor rdbAuthor) {
+        return new MongoAuthor(String.valueOf(rdbAuthor.getId()), rdbAuthor.getName());
     }
 
     public long getId() {
@@ -36,8 +41,8 @@ public class Genre {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Genre genre = (Genre) o;
-        return id == genre.id && Objects.equals(name, genre.name);
+        RdbAuthor author = (RdbAuthor) o;
+        return id == author.id && Objects.equals(name, author.name);
     }
 
     @Override

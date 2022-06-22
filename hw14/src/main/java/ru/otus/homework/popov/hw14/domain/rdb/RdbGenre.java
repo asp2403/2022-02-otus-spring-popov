@@ -1,16 +1,17 @@
-package ru.otus.homework.popov.hw14.domain;
+package ru.otus.homework.popov.hw14.domain.rdb;
 
 import java.util.Objects;
 
-public class Author {
+public class RdbGenre {
 
     private long id;
 
     private String name;
 
-    public Author(){}
+    public RdbGenre() {
+    }
 
-    public Author(long id, String name) {
+    public RdbGenre(long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -35,8 +36,8 @@ public class Author {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Author author = (Author) o;
-        return id == author.id && Objects.equals(name, author.name);
+        RdbGenre genre = (RdbGenre) o;
+        return id == genre.id && Objects.equals(name, genre.name);
     }
 
     @Override

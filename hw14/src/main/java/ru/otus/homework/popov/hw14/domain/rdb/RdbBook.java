@@ -1,24 +1,24 @@
-package ru.otus.homework.popov.hw14.domain;
+package ru.otus.homework.popov.hw14.domain.rdb;
 
 import java.util.List;
 import java.util.Objects;
 
 
-public class Book {
+public class RdbBook {
 
     private long id;
 
     private String title;
 
-    private Author author;
+    private RdbAuthor author;
 
-    private Genre genre;
+    private RdbGenre genre;
 
-    private List<Comment> comments;
+    private List<RdbComment> comments;
 
-    public Book() {}
+    public RdbBook() {}
 
-    public Book(long id, String title, Author author, Genre genre) {
+    public RdbBook(long id, String title, RdbAuthor author, RdbGenre genre) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -33,11 +33,11 @@ public class Book {
         return title;
     }
 
-    public Author getAuthor() {
+    public RdbAuthor getAuthor() {
         return author;
     }
 
-    public Genre getGenre() {
+    public RdbGenre getGenre() {
         return genre;
     }
 
@@ -49,19 +49,19 @@ public class Book {
         this.title = title;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(RdbAuthor author) {
         this.author = author;
     }
 
-    public void setGenre(Genre genre) {
+    public void setGenre(RdbGenre genre) {
         this.genre = genre;
     }
 
-    public List<Comment> getComments() {
+    public List<RdbComment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<RdbComment> comments) {
         this.comments = comments;
     }
 
@@ -69,7 +69,7 @@ public class Book {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
+        RdbBook book = (RdbBook) o;
         return id == book.id && title.equals(book.title) && author.equals(book.author) && genre.equals(book.genre) && Objects.equals(comments, book.comments);
     }
 
