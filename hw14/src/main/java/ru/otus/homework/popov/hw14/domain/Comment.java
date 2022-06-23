@@ -1,4 +1,4 @@
-package ru.otus.homework.popov.hw14.domain.mongo;
+package ru.otus.homework.popov.hw14.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -7,25 +7,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Objects;
 
 @Document(collection = "comments")
-public class MongoComment {
+public class Comment {
     @Id
     private String id;
     private String text;
     @DBRef
-    private MongoBook book;
+    private Book book;
 
-    public MongoComment(String id, String text) {
+    public Comment(String id, String text) {
         this.id = id;
         this.text = text;
     }
 
-    public MongoComment() {}
+    public Comment() {}
 
-    public MongoBook getBook() {
+    public Book getBook() {
         return book;
     }
 
-    public void setBook(MongoBook book) {
+    public void setBook(Book book) {
         this.book = book;
     }
 
@@ -49,7 +49,7 @@ public class MongoComment {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MongoComment comment = (MongoComment) o;
+        Comment comment = (Comment) o;
         return Objects.equals(id, comment.id) && Objects.equals(text, comment.text) && Objects.equals(book, comment.book);
     }
 

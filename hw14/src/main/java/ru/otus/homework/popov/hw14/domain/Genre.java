@@ -1,4 +1,4 @@
-package ru.otus.homework.popov.hw14.domain.mongo;
+package ru.otus.homework.popov.hw14.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -6,13 +6,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Objects;
 
 @Document(collection = "genres")
-public class MongoGenre {
+public class Genre {
     @Id
     private String id;
 
     private String name;
 
-    public MongoGenre(String id, String name) {
+    public Genre(String id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -37,7 +37,7 @@ public class MongoGenre {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MongoGenre genre = (MongoGenre) o;
+        Genre genre = (Genre) o;
         return Objects.equals(id, genre.id) && Objects.equals(name, genre.name);
     }
 

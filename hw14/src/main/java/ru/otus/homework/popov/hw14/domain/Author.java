@@ -1,4 +1,4 @@
-package ru.otus.homework.popov.hw14.domain.mongo;
+package ru.otus.homework.popov.hw14.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -6,12 +6,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Objects;
 
 @Document(collection = "authors")
-public class MongoAuthor {
+public class Author {
     @Id
     private String id;
     private String name;
 
-    public MongoAuthor(String id, String name) {
+    public Author(String id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -38,7 +38,7 @@ public class MongoAuthor {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MongoAuthor author = (MongoAuthor) o;
+        Author author = (Author) o;
         return Objects.equals(id, author.id) && Objects.equals(name, author.name);
     }
 
