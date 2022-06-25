@@ -19,6 +19,12 @@ public class Comment {
         this.text = text;
     }
 
+    public Comment(String id, String text, Book book) {
+        this.id = id;
+        this.text = text;
+        this.book = book;
+    }
+
     public Comment() {}
 
     public Book getBook() {

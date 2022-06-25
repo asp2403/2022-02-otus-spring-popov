@@ -6,7 +6,6 @@ import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
@@ -19,6 +18,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.NonNull;
 import ru.otus.homework.popov.hw14.domain.Author;
 import ru.otus.homework.popov.hw14.domain.Book;
+import ru.otus.homework.popov.hw14.domain.Comment;
 import ru.otus.homework.popov.hw14.domain.Genre;
 
 import javax.sql.DataSource;
@@ -31,6 +31,9 @@ public class JobConfig {
     private static final int CHUNK_SIZE = 10;
     private final Logger logger = LoggerFactory.getLogger("JobLogger");
 
+
+    public static final String JOB_NAME = "importLibraryJob";
+
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
 
@@ -42,6 +45,17 @@ public class JobConfig {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+
+    @Bean
+    public Job importLibrary() {
+        return jobBuilderFactory.get(JOB_NAME)
+                .start(importAuthorsStep())
+                .next(importGenresStep())
+                .next(importBooksStep())
+                .next(importCommentsStep())
+                .build();
+    }
 
     @Bean
     public ItemReader<Author> authorReader(DataSource dataSource) {
@@ -231,13 +245,66 @@ public class JobConfig {
                 .build();
     }
 
+    @Bean
+    public ItemReader<Comment> commentReader(DataSource dataSource) {
+        return new JdbcCursorItemReaderBuilder<Comment>()
+                .name("commentReader")
+                .dataSource(dataSource)
+                .sql("select c.id_comment, c.id_book, comment_text, b.title, a.id_author, a.name as author_name, g.id_genre, g.name as genre_name  from comment c " +
+                        "inner join book b on b.id_book = c.id_book " +
+                        "inner join author a on a.id_author = b.id_author " +
+                        "inner join genre g on g.id_genre = b.id_genre ")
+                .rowMapper(new CommentMapper())
+                .build();
+    }
 
     @Bean
-    public Job importLibrary() {
-        return jobBuilderFactory.get("importLibraryJob")
-                .start(importAuthorsStep())
-                .next(importGenresStep())
-                .next(importBooksStep())
+    public ItemWriter<Comment> commentWriter() {
+        return new MongoItemWriterBuilder<Comment>()
+                .template(mongoTemplate)
+                .collection("comments")
+                .build();
+    }
+
+    @Bean
+    public Step importCommentsStep() {
+        return stepBuilderFactory.get("importCommentsStep")
+                .<Comment, Comment>chunk(CHUNK_SIZE)
+                .reader(commentReader(dataSource))
+                .writer(commentWriter())
+                .listener(new ItemReadListener<Comment>() {
+
+                              @Override
+                              public void beforeRead() {
+
+                              }
+
+                              @Override
+                              public void afterRead(Comment comment) {
+                                  logger.info(comment.getText());
+                              }
+
+                              @Override
+                              public void onReadError(@NonNull Exception e) {
+                                  logger.info("Ошибка чтения");
+                              }
+                          }
+
+                )
+                .listener(new StepExecutionListener() {
+                              @Override
+                              public void beforeStep(StepExecution stepExecution) {
+                                  logger.info("Импортируем комментарии...");
+                              }
+
+                              @Override
+                              public ExitStatus afterStep(StepExecution stepExecution) {
+                                  return null;
+                              }
+
+                          }
+
+                )
                 .build();
     }
 
@@ -275,6 +342,26 @@ public class JobConfig {
             var genreName = resultSet.getString("genre_name");
             var genre = new Genre(idGenre, genreName);
             return new Book(idBook, title, author, genre, resultSet.getInt("c_count"));
+        }
+    }
+
+    private static class CommentMapper implements RowMapper<Comment> {
+
+        @Override
+        public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
+            var idComment = String.valueOf(resultSet.getInt("id_comment"));
+            var commentText = resultSet.getString("comment_text");
+            var idBook = String.valueOf(resultSet.getLong("id_book"));
+            var title = resultSet.getString("title");
+            var idAuthor = String.valueOf(resultSet.getLong("id_author"));
+            var authorName = resultSet.getString("author_name");
+            var author = new Author(idAuthor, authorName);
+            var idGenre = String.valueOf(resultSet.getLong("id_genre"));
+            var genreName = resultSet.getString("genre_name");
+            var genre = new Genre(idGenre, genreName);
+            var book = new Book(idBook, title, author, genre);
+            var comment = new Comment(idComment, commentText, book);
+            return comment;
         }
     }
 

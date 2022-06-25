@@ -22,6 +22,13 @@ public class Book {
         this.commentCount = commentCount;
     }
 
+    public Book(String id, String title, Author author, Genre genre) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.genre = genre;
+    }
+
     public Book(String title, Author author, Genre genre) {
         this.title = title;
         this.author = author;
