@@ -81,6 +81,13 @@
 
 **Spring MVС. Spring Security. MongoDB. Mongock. UI - Angular.**
 
+##### hw14
+
+Миграция данных с помощью Spring Batch (H2 -> MongoDB)
+
+**Spring Batch. Flyway. MongoDB.**
+
+
 
 
 
