@@ -87,6 +87,12 @@
 
 **Spring Batch. Flyway. MongoDB.**
 
+##### hw15
+
+Умный коктельный бар. Использование Http.outboundGateway и каналов Spring Integration.
+
+**Spring Integration. Spring Shell.**
+
 
 
 
