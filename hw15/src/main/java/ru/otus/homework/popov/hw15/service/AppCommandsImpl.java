@@ -12,8 +12,9 @@ public class AppCommandsImpl implements AppCommands {
     }
 
     @Override
-    public void getCocktail(String cocktailName) {
-        cocktailBar.prepare(cocktailName);
-
+    public String getCocktail(String cocktailName) {
+        var cocktail = cocktailBar.prepare(cocktailName);
+        return cocktail.map(c -> "Enjoy your '" + c.getReceipt().getCocktailName() + "'!")
+                .orElse("Sorry, we couldn't find the receipt of your cocktail. Would you like to order the other one?");
     }
 }

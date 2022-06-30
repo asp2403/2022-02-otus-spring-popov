@@ -1,18 +1,14 @@
 package ru.otus.homework.popov.hw15.domain;
 
-import java.util.List;
-
 public class Cocktail {
-    private List<Ingredient> ingredients;
+    private final Receipt receipt;
 
-    public Cocktail(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+
+    public Cocktail(Receipt receipt) {
+        this.receipt = receipt;
     }
 
-    public Cocktail() {
-    }
-
-    public List<Ingredient> getIngredients() {
-        return ingredients;
+    public Receipt getReceipt() {
+        return receipt;
     }
 }

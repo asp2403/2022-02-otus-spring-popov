@@ -13,8 +13,8 @@ public class AppShell {
     }
 
     @ShellMethod(value = "Get Cocktail", key = {"get-cocktail", "gc"})
-    public void getCocktail(String cocktailName) {
-        appCommands.getCocktail(cocktailName);
+    public String getCocktail(String cocktailName) {
+        return appCommands.getCocktail(cocktailName);
     }
 
 }
