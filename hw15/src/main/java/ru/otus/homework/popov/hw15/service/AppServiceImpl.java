@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service;
 import ru.otus.homework.popov.hw15.CocktailBar;
 
 @Service
-public class AppCommandsImpl implements AppCommands {
+public class AppServiceImpl implements AppService {
     private final CocktailBar cocktailBar;
 
-    public AppCommandsImpl(CocktailBar cocktailBar) {
+    public AppServiceImpl(CocktailBar cocktailBar) {
         this.cocktailBar = cocktailBar;
     }
 

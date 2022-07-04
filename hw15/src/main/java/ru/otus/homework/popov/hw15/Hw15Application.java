@@ -17,23 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @SpringBootApplication
 public class Hw15Application {
 
-    @Bean
-    public IntegrationFlow cocktailBarFlow() {
-        return IntegrationFlows.from("cocktailBar.input")
-                .handle(Http.outboundGateway("https://www.thecocktaildb.com/api/json/v1/1/search.php?s={cocktail}")
-                        .httpMethod(HttpMethod.GET)
-                        .uriVariable("cocktail",
-                                m -> m.getPayload()
-                        )
-                        .expectedResponseType(String.class)
-                )
-                .handle("responseProcessService", "process")
-                .handle("barService", "prepare")
-                .channel("cocktailBar.output")
-                .get();
-    }
-
-    public static void main(String[] args) {
+   public static void main(String[] args) {
         SpringApplication.run(Hw15Application.class, args);
     }
 

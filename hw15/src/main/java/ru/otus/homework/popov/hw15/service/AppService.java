@@ -1,5 +1,5 @@
 package ru.otus.homework.popov.hw15.service;
 
-public interface AppCommands {
+public interface AppService {
     String getCocktail(String cocktailName);
 }
