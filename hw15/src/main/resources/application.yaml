@@ -1,0 +1,10 @@
+logging:
+  level:
+    root: error
+
+spring:
+  main:
+    allow-circular-references: true
+  shell:
+    interactive:
+      enabled: true
