@@ -12,6 +12,7 @@ public class Hw16Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Hw16Application.class, args);
+		System.out.println("Server ready...");
 	}
 
 }
