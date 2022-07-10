@@ -1,0 +1,40 @@
+logging:
+  level:
+    root: INFO
+  file:
+    name: app.log
+
+spring:
+  mongodb:
+    embedded:
+      version: 3.5.5
+  data:
+    mongodb:
+      port: 0
+      database: books
+    rest:
+      basePath: /api
+mongock:
+  change-logs-scan-package:
+    - ru.otus.homework.popov.hw16.mongock.changelog
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+
+info:
+  app:
+    author: Alexander Popov
+    description: Homework on Spring Actuator and HATEOAS
+
