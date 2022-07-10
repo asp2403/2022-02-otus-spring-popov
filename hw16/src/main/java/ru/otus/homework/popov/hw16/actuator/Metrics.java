@@ -10,12 +10,9 @@ import java.util.Collection;
 
 @Component
 public class Metrics {
-    private final BookRepository bookRepository;
-    private final MeterRegistry registry;
+
 
     public Metrics(BookRepository bookRepository, MeterRegistry registry) {
-        this.bookRepository = bookRepository;
-        this.registry = registry;
 
         Gauge.builder("gauge.bookCount", () -> bookRepository.count())
                 .baseUnit(BaseUnits.OBJECTS)
