@@ -48,7 +48,7 @@
 
 "Библиотека" на Spring Data MongoDB.
 
-**Spring Data JPA. MongoDB. Mongock. Spring Shell.**
+**Spring Data MongoDB. Mongock. Spring Shell.**
 
 ##### hw9
 
@@ -93,6 +93,11 @@
 
 **Spring Integration. Spring Shell.**
 
+##### hw16
+
+Библиотека на Spring Data Rest. Используются метрики, healthchecks и logfile
+
+**HATEOAS. Spring Data Rest. Spring Actuator. UI - Angular**
 
 
 
