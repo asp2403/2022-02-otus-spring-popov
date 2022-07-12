@@ -3,19 +3,22 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_build
     privileged: true
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATA_MONGODB_PORT=8081
-      - SPRING_DATA_MONGODB_DATABASE=books
+      - SPRING_DATA_MONGODB_HOST=mongo
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=library
+      - LOGGING_LEVEL_ROOT=ERROR
     networks:
       - nw
   mongo:
     image: "mongo"
+    container_name: "mongo"
     ports:
-      - "8081:8081"
+      - "8081:27017"
     networks:
       - nw
 networks:

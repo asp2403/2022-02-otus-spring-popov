@@ -1,15 +1,13 @@
 logging:
   level:
-    root: INFO
+    root: ERROR
     org:
       springframework:
         security: ERROR
 spring:
-  data:
-    mongodb:
-      port: 27017
-      database: books
-      host: localhost
+  mongodb:
+    embedded:
+      version: 3.5.5
 
 mongock:
   change-logs-scan-package:
