@@ -1,0 +1,16 @@
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        security: ERROR
+spring:
+  data:
+    mongodb:
+      port: 27017
+      database: books
+      host: localhost
+
+mongock:
+  change-logs-scan-package:
+    - ru.otus.homework.popov.mongock.changelog

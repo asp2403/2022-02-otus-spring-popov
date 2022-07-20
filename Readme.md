@@ -99,6 +99,12 @@
 
 **HATEOAS. Spring Data Rest. Spring Actuator. UI - Angular**
 
+##### hw17
+
+Приложение из задания 13 поставляется в виде 3 докер-контейнеров (api, ui, db), связанных с помощью docker-compose.
+
+**Docker. Java Spring. NGINX. Angular. MongoDB**
+
 
 
 
