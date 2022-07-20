@@ -10,7 +10,7 @@ FROM openjdk:11-jre-slim
 ENV PROJECT_DIR=/opt/project
 RUN mkdir -p $PROJECT_DIR
 WORKDIR $PROJECT_DIR
-COPY --from=build $PROJECT_DIR/target/hw17-0.0.1-SNAPSHOT.jar $PROJECT_DIR/app.jar
+COPY --from=build $PROJECT_DIR/target/*.jar $PROJECT_DIR/app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/opt/project/app.jar"]
