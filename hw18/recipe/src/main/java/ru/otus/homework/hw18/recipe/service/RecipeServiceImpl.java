@@ -18,10 +18,13 @@ public class RecipeServiceImpl implements RecipeService {
 
     private final AppConfig appConfig;
 
+    private final RestTemplate rest;
+
     private static final int MAX_INGREDIENTS = 15;
 
-    public RecipeServiceImpl(AppConfig appConfig) {
+    public RecipeServiceImpl(AppConfig appConfig, RestTemplate rest) {
         this.appConfig = appConfig;
+        this.rest = rest;
     }
 
     private Optional<Recipe> extractRecipe(String responseStr) {
@@ -34,7 +37,6 @@ public class RecipeServiceImpl implements RecipeService {
                 if (!drinks.isEmpty()) {
                     var drink = drinks.getJSONObject(0);
                     cocktailName = drink.getString("strDrink");
-                    System.out.println("Receipt found: " + cocktailName);
                     for (var i = 1; i <= MAX_INGREDIENTS; i++) {
                         var propName = "strIngredient" + i;
                         if (!drink.isNull(propName)) {
@@ -57,7 +59,6 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Optional<Recipe> findRecipe(String cocktailName) {
         var url = appConfig.getUrl();
-        var rest = new RestTemplate();
         var uriVariables = new HashMap<String, String>();
         uriVariables.put("cocktail", cocktailName);
         var response = rest.getForEntity(UriComponentsBuilder.fromHttpUrl(url).buildAndExpand(uriVariables).encode().toUriString(), String.class);
