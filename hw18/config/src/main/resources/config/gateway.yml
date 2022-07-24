@@ -1,0 +1,19 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    fetch-registry: true
+
+zuul:
+  prefix: "/api"
+  ignoredServices: '*'
+  routes:
+    cocktail:
+      serviceId: bar
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-package ru.otus.homework.hw18.recipe.domain;
+package ru.otus.homework.hw18.bar.domain;
 
 public class Ingredient {
     private String name;

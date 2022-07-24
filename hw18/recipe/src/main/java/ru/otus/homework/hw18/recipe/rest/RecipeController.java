@@ -1,6 +1,7 @@
 package ru.otus.homework.hw18.recipe.rest;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +18,8 @@ public class RecipeController {
     }
 
     @GetMapping("/recipe/{cocktail}")
-    public Recipe findRecipe(@PathVariable(name = "cocktail") String cocktailName) {
+    public ResponseEntity<Recipe> findRecipe(@PathVariable(name = "cocktail") String cocktailName) {
        var recipe = recipeService.findRecipe(cocktailName);
-       return recipe.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+       return ResponseEntity.of(recipe);
     }
 }
