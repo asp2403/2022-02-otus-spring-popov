@@ -6,11 +6,13 @@ eureka:
     fetch-registry: true
 
 zuul:
-  prefix: "/api"
-  ignoredServices: '*'
+  prefix: /api
   routes:
-    cocktail:
-      serviceId: bar
+    bar:
+      service-id: bar
+    recipes:
+      service-id: recipe
+      path: /recipe-base/**
 
 
 
