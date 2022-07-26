@@ -1,5 +1,7 @@
 package ru.otus.homework.hw18.recipe.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import ru.otus.homework.hw18.recipe.config.AppConfig;
 import ru.otus.homework.hw18.recipe.domain.Ingredient;
 import ru.otus.homework.hw18.recipe.domain.Recipe;
@@ -56,8 +58,12 @@ public class RecipeServiceImpl implements RecipeService {
         }
     }
 
+    @HystrixCommand(commandProperties= {
+            @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value="3000")
+    }, fallbackMethod="findRecipeFallback")
     @Override
     public Optional<Recipe> findRecipe(String cocktailName) {
+
         var url = appConfig.getUrl();
         var uriVariables = new HashMap<String, String>();
         uriVariables.put("cocktail", cocktailName);
@@ -68,4 +74,9 @@ public class RecipeServiceImpl implements RecipeService {
             return Optional.empty();
         }
     }
+
+    public Optional<Recipe> findRecipeFallback(String cocktailName) {
+        return Optional.empty();
+    }
+
 }

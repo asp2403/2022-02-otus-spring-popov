@@ -89,7 +89,7 @@
 
 ##### hw15
 
-Умный коктельный бар. Использование Http.outboundGateway и каналов Spring Integration.
+Умный коктейльный бар. Использование Http.outboundGateway и каналов Spring Integration.
 
 **Spring Integration. Spring Shell.**
 
@@ -104,6 +104,12 @@
 Приложение из задания 13 поставляется в виде 3 докер-контейнеров (api, ui, db), связанных с помощью docker-compose.
 
 **Docker. Java Spring. NGINX. Angular. MongoDB**
+
+##### hw18
+
+Приложение из задания 15 переписано на микросервисах.
+
+**Microservices. Spring Cloud. Zuul Gateway. Config Service. Eureka. Hystrix. Feign**
 
 
 
