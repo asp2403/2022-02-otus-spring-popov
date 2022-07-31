@@ -1,0 +1,21 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    fetch-registry: true
+
+zuul:
+  prefix: /api
+  routes:
+    bar:
+      service-id: bar
+    recipes:
+      service-id: recipe
+      path: /recipe-base/**
+
+
+
+
+
+

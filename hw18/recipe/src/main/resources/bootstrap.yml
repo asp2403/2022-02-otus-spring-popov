@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: recipe
+
+  cloud:
+    config:
+      uri: "http://localhost:8888"
